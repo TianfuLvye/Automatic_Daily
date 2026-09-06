@@ -1,8 +1,15 @@
 # Automatic Daily 参考实现
 
+<p align="center">
+  <img src="./assets/showcase/automatic-daily-sample-front-page.png" alt="自动日报成品示例：头版" width="48%" />
+  <img src="./assets/showcase/automatic-daily-sample-inside-page.png" alt="自动日报成品示例：内页" width="48%" />
+</p>
+
 项目背景与早期设计记录见 [docs/archive/](./docs/archive/)。
 
 设计笔记（每个功能为什么这样实现）见 [`docs/`](./docs/README.md)。
+
+Automatic Daily 是一条自动化日报流水线：优先使用 RSS、公开 API 及允许自动访问的信息源，经过筛选、抽取、排序与排版，生成适合日常阅读的多栏报纸 PDF。版式参考传统英式大报的多栏版式与信息层级；仓库中的 Sample PDF 仅用于展示生成效果，并保留原文来源链接。
 
 ## 部署
 
@@ -118,9 +125,7 @@ uv run python -m tests.test_hotlist_endurance --minutes 3 --interval 60
 | docker-compose.wewe-rss.yml | 3.4 | 可选 WeWe RSS（公众号 → RSS） |
 | docs/adr/002-wechat-mp-strategy.md | 3.4 | 公众号方案 ADR(已接入章北海) |
 | docs/adr/003-mediacrawler-scope.md | 4 | MediaCrawler 只覆盖指定小红书创作者 |
-| docs/notes/anti-crawling.md | 4.2 | 登录态 / 签名 / Playwright / 限速 |
 | docs/adr/001-why-not-trendradar.md | 2 | 不把 TrendRadar 当数据源的 ADR |
-| docs/adr/004-extract-and-robots.md | 5 | 正文优先 RSS/API;robots 个人 override |
 | docs/adr/005-scheduler-runtime.md | 6 | 调度跑在家;残缺出报;Actions 只做心跳 |
 | pipeline/dedup.py | 7 | SimHash + 鸽笼分桶 + 语义聚类 + 事件折叠 |
 | pipeline/score.py | 7 | 多簇兴趣画像、对数正态长度分、探索、MMR |
@@ -132,7 +137,7 @@ uv run python -m tests.test_hotlist_endurance --minutes 3 --interval 60
 | render/edition_to_articles.py | 8 | 期次目录 → articles.json |
 | render/edition_to_client.py | 8 | 期次目录 → 移动端 edition.json |
 | render/newspaper.py | 8 | newspaper-layout v0.4 → HTML + PDF |
-| render/newspaper_templates/ | 8 | Guardian 模板 |
+| render/newspaper_templates/ | 8 | **Broadsheet / Newspaper Template** |
 | notify/ | 9.1 | 通道选择 + SMTP(摘要正文,PDF 附件) |
 | Dockerfile / docker-compose.yml | 部署 | 全家桶:Automatic Daily + DailyHot + RSSHub + Redis |
 | docs/adr/006-embed-backend.md | 7 | 不上 chromadb 的理由 |
