@@ -1,22 +1,21 @@
-# Fishnet 项目结构（Compose 全家桶之后）
+# Automatic Daily 项目结构（Compose 全家桶之后）
 
-配套历史手册在仓库上一级。本仓库 `fishnet-reference/` 是实现。设计决策记在 `docs/lab-*.md` 和 `docs/adr/`；本文只画**现在代码实际长什么样**。
+配套历史手册已归档在 `docs/archive/`。本仓库是 Automatic Daily 的实现。设计决策记在 `docs/数字前缀-*.md` 和 `docs/adr/`；本文只画**现在代码实际长什么样**。
 
 ---
 
 ## 1. 一句话
 
-Fishnet 是一份个人报纸流水线：多源撒网 → SQLite 幂等入库 → 抽正文 → 按口味打分出一期 Markdown 早报/晚报。采集、排序已经把「今天读什么」算完并写成 `digest.md`。排版阶段把这份 Markdown **排成愿意早餐时读的 PDF**，不要再去改采集和打分。
+Automatic Daily 是一份个人报纸流水线：多源采集 → SQLite 幂等入库 → 抽正文 → 按口味打分出一期 Markdown 早报/晚报。采集、排序已经把「今天读什么」算完并写成 `digest.md`。排版阶段把这份 Markdown **排成愿意早餐时读的 PDF**，不要再去改采集和打分。
 
 ---
 
 ## 2. 工作区怎么摆
 
 ```text
-fishnet-lab/                      ← Cursor 工作区
-├── Fishnet-Lab.md                历史设计手册
-├── Fishnet-Lab-Answers.md        历史思考题参考
-└── fishnet-reference/            ← 本实现（git 仓库）
+<workspace>/                       ← Cursor 工作区
+└── automatic-daily/              ← 本实现（git 仓库）
+    ├── docs/archive/             历史设计手册与思考题参考
     ├── main.py                   唯一 CLI
     ├── config/                   源、关键词、黄金集、调度参数
     ├── core/                     契约 + 存储 + 采集器注册
@@ -31,11 +30,11 @@ fishnet-lab/                      ← Cursor 工作区
     └── data/                     运行时产物（不进 git）
 ```
 
-依赖外部进程。当前默认走 `docker compose up -d`(fishnet 也在里面):
+依赖外部进程。当前默认走 `docker compose up -d`(Automatic Daily 也在里面):
 
 | 服务 | 干什么 | 怎么起 |
 |---|---|---|
-| fishnet | `main.py serve`:调度 + 出报 + 邮件 | compose 服务 `fishnet`(build Dockerfile) |
+| Automatic Daily | `main.py serve`:调度 + 出报 + 邮件 | compose 服务 `automatic-daily`(build Dockerfile) |
 | DailyHotApi `:6688` | 微博/知乎/抖音等热榜 | compose 服务 `dailyhot` |
 | RSSHub `:1200` + Redis | 知乎回答、B 站、见闻等订阅 | compose 服务 `rsshub` / `redis` |
 | WeWe RSS（可选） | 公众号 → RSS | `docker-compose.wewe-rss.yml` |
@@ -247,7 +246,7 @@ uv run main.py render --edition am
 | `pdf` | 8 | 已有期次 → v0.4 A3 HTML/PDF,不打 used_in |
 | `push` | 9 | 邮件推送最近一期(或 `--edition`) |
 
-测试：`uv run python -m tests.test_labN`（N=1…9），总冒烟 `tests.test_all`。
+测试：按功能运行 `uv run python -m tests.test_*`，总冒烟 `tests.test_all`。
 
 ---
 
@@ -272,7 +271,7 @@ uv run main.py render --edition am
 
 ## 10. 排版接在哪（已写）
 
-手册目标：Markdown → 一份早餐能读完的报纸。版心是 newspaper-layout v0.4 模板拼版。细节见 [lab-08-render.md](./lab-08-render.md) 和 [ADR-009](./adr/009-newspaper-layout-v04.md)。
+手册目标：Markdown → 一份早餐能读完的报纸。版心是 newspaper-layout v0.4 模板拼版。细节见 [8-render.md](./8-render.md) 和 [ADR-009](./adr/009-newspaper-layout-v04.md)。
 
 **吃这些，不要回头打 collector：**
 

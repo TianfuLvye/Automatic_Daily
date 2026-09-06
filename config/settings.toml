@@ -1,15 +1,15 @@
-# Fishnet 全局配置
+# Automatic Daily 全局配置
 
 [dailyhot]
 # 自部署 DailyHotApi 基址。勿依赖公共实例——它随时会挂。
-# 本机 CLI 用 127.0.0.1。compose 里 fishnet 容器由 FISHNET_DAILYHOT_URL 覆盖。
+# 本机 CLI 用 127.0.0.1。compose 里 automatic-daily 容器由 FISHNET_DAILYHOT_URL 覆盖。
 base_url = "http://127.0.0.1:6688"
 timeout_seconds = 20
 
 [rsshub]
 # 自部署 RSSHub(见仓库根目录 docker-compose.yml)。
 # Docker 网络内其它容器可用 http://rsshub:1200;本机 CLI 用 127.0.0.1。
-# compose 里 fishnet 容器由 FISHNET_RSSHUB_URL 覆盖,不必改这一行。
+# compose 里 automatic-daily 容器由 FISHNET_RSSHUB_URL 覆盖,不必改这一行。
 base_url = "http://127.0.0.1:1200"
 
 [wewe]
@@ -34,7 +34,7 @@ pm_hour = 19
 pm_minute = 0
 
 [mediacrawler]
-# MediaCrawler 仓库路径(独立进程,不 import 进 Fishnet)。
+# MediaCrawler 仓库路径(独立进程,不 import 进 Automatic Daily)。
 # git clone --depth 1 https://github.com/NanmiCoder/MediaCrawler third_party/MediaCrawler
 home = "third_party/MediaCrawler"
 

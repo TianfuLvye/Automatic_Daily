@@ -9,7 +9,7 @@ from collections.abc import Iterable
 from core.schema import Item
 from core.store import Store
 
-log = logging.getLogger("fishnet")
+log = logging.getLogger("automatic_daily")
 
 
 class BaseCollector(ABC):

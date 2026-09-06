@@ -27,7 +27,7 @@ MAX_KEEP = 3
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 MIN_PRINT_SIDE = 160
 COVER_ROLES = {"cover", "og"}
-log = logging.getLogger("fishnet.images")
+log = logging.getLogger("automatic_daily.images")
 
 _SKIP_RE = re.compile(
     r"avatar|emoji|qrcode|qr[_-]?code|icon|logo|badge|spacer|pixel|1x1|"

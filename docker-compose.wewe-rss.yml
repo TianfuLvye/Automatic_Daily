@@ -4,13 +4,13 @@
 #   docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 #
 # 管理界面: http://127.0.0.1:4000
-# 详细步骤见 docs/lab-03-rsshub.md §「部署 WeWe RSS」
+# 详细步骤见 docs/3-rsshub.md §「部署 WeWe RSS」
 #
-# 叠加后 fishnet 容器改走 http://wewe-rss:4000,并把 wechat.yaml 里的
+# 叠加后 automatic-daily 容器改走 http://wewe-rss:4000,并把 wechat.yaml 里的
 # 127.0.0.1:4000 改写成服务名。本机浏览器仍打开 127.0.0.1:4000。
 
 services:
-  fishnet:
+  automatic-daily:
     environment:
       FISHNET_WEWE_URL: http://wewe-rss:4000
 
@@ -22,8 +22,8 @@ services:
       DATABASE_TYPE: sqlite
       # 管理端/API 授权码；在 .env 里设 WEWE_AUTH_CODE，勿用弱密码提交到 Git
       AUTH_CODE: ${WEWE_AUTH_CODE:-change-me-in-env}
-      # Fishnet serve 已在 05:00–06:00 / 16:00–17:00 窗口刷号。
-      # 不要再用默认每天 5:35/17:35，否则会和 Fishnet 叠打。
+      # Automatic Daily serve 已在 05:00–06:00 / 16:00–17:00 窗口刷号。
+      # 不要再用默认每天 5:35/17:35，否则会和 Automatic Daily 叠打。
       # 仅当 serve 没开时救急：每周日 03:17。
       CRON_EXPRESSION: "17 3 * * 0"
       # 可选:全文模式(更慢、占内存)

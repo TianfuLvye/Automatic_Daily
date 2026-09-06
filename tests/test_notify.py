@@ -26,9 +26,9 @@ from notify.email import build_message
 from notify.push import already_sent, push_edition_dir
 
 PASS = FAIL = 0
-DOC = ROOT / "docs" / "lab-09-notify.md"
+DOC = ROOT / "docs" / "9-notify.md"
 ADR = ROOT / "docs" / "adr" / "010-notify-email.md"
-COMPOSE_DOC = ROOT / "docs" / "lab-09-compose.md"
+COMPOSE_DOC = ROOT / "docs" / "9-compose.md"
 ADR011 = ROOT / "docs" / "adr" / "011-compose-runtime.md"
 COMPOSE_YML = ROOT / "docker-compose.yml"
 DOCKERFILE = ROOT / "Dockerfile"
@@ -91,9 +91,9 @@ def _smtp() -> SmtpConfig:
     return SmtpConfig(
         host="smtp.test.local",
         port=465,
-        user="fishnet@test.local",
+        user="automatic-daily@test.local",
         password="secret",
-        from_addr="fishnet@test.local",
+        from_addr="automatic-daily@test.local",
         to_addrs=("reader@test.local",),
         use_ssl=True,
         starttls=False,
@@ -101,7 +101,7 @@ def _smtp() -> SmtpConfig:
 
 
 print("\n[推送] 文档")
-check("lab-09 笔记存在", DOC.exists())
+check("9-notify 笔记存在", DOC.exists())
 check("ADR-010 存在", ADR.exists())
 if DOC.exists():
     t = DOC.read_text(encoding="utf-8")
@@ -188,7 +188,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("纯文本也能扫读", "头版一条很长的新闻标题" in mail.text)
 
     msg = build_message(mail, _smtp())
-    check("From/To 写上", msg["From"] == "fishnet@test.local" and "reader@test.local" in msg["To"])
+    check("From/To 写上", msg["From"] == "automatic-daily@test.local" and "reader@test.local" in msg["To"])
     check("有 HTML alternative", msg.is_multipart())
     payloads = []
     filenames = []
@@ -253,7 +253,7 @@ check("push 子命令有 --dry-run", sub is not None and "--dry-run" in sub.form
 
 
 print("\n[部署] Compose 全家桶")
-check("lab-09-compose 笔记存在", COMPOSE_DOC.exists())
+check("9-compose 笔记存在", COMPOSE_DOC.exists())
 check("ADR-011 存在", ADR011.exists())
 check("Dockerfile 存在", DOCKERFILE.exists())
 check("entrypoint 存在", ENTRYPOINT.exists())
@@ -287,15 +287,15 @@ compose = yaml.safe_load(COMPOSE_YML.read_text(encoding="utf-8")) or {}
 services = compose.get("services") or {}
 check(
     "四件套服务",
-    set(services) >= {"fishnet", "dailyhot", "rsshub", "redis"},
+    set(services) >= {"automatic-daily", "dailyhot", "rsshub", "redis"},
     str(sorted(services)),
 )
-fish = services.get("fishnet") or {}
-check("fishnet build 当前目录", fish.get("build") == ".", str(fish.get("build")))
-vols = [str(v) for v in (fish.get("volumes") or [])]
+automatic_daily = services.get("automatic-daily") or {}
+check("automatic-daily build 当前目录", automatic_daily.get("build") == ".", str(automatic_daily.get("build")))
+vols = [str(v) for v in (automatic_daily.get("volumes") or [])]
 check("挂 data", any("data" in v for v in vols), str(vols))
 check("挂 config", any("config" in v for v in vols), str(vols))
-env = fish.get("environment") or {}
+env = automatic_daily.get("environment") or {}
 if isinstance(env, list):
     env = dict(x.split("=", 1) for x in env if isinstance(x, str) and "=" in x)
 check(
@@ -308,11 +308,11 @@ check(
     str(env.get("FISHNET_RSSHUB_URL", "")).startswith("http://rsshub"),
     str(env),
 )
-deps = fish.get("depends_on") or []
+deps = automatic_daily.get("depends_on") or []
 if isinstance(deps, dict):
     deps = list(deps)
 check("depends_on rsshub+dailyhot", "rsshub" in deps and "dailyhot" in deps, str(deps))
-check("restart unless-stopped", fish.get("restart") == "unless-stopped")
+check("restart unless-stopped", automatic_daily.get("restart") == "unless-stopped")
 dh = services.get("dailyhot") or {}
 check("dailyhot 官方镜像", "dailyhot-api" in str(dh.get("image", "")))
 rss = services.get("rsshub") or {}
@@ -321,8 +321,8 @@ check("rsshub chromium-bundled", "rsshub" in str(rss.get("image", "")))
 wewe_overlay = yaml.safe_load(
     (ROOT / "docker-compose.wewe-rss.yml").read_text(encoding="utf-8")
 ) or {}
-wewe_fish = (wewe_overlay.get("services") or {}).get("fishnet") or {}
-wewe_env = wewe_fish.get("environment") or {}
+wewe_automatic_daily = (wewe_overlay.get("services") or {}).get("automatic-daily") or {}
+wewe_env = wewe_automatic_daily.get("environment") or {}
 if isinstance(wewe_env, list):
     wewe_env = dict(x.split("=", 1) for x in wewe_env if isinstance(x, str) and "=" in x)
 check(
@@ -332,8 +332,8 @@ check(
 )
 check(
     "wewe overlay 不覆盖 depends_on",
-    "depends_on" not in wewe_fish,
-    str(wewe_fish.keys()),
+    "depends_on" not in wewe_automatic_daily,
+    str(wewe_automatic_daily.keys()),
 )
 
 

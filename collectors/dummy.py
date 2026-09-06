@@ -15,8 +15,8 @@ class DummyCollector(BaseCollector):
         yield Item(
             source=Source.OTHER,
             kind=Kind.ARTICLE,
-            title="Hello Fishnet",
+            title="Hello Automatic Daily",
             url="https://example.com/?utm_source=x",
             collector=self.name,
-            raw={"note": "lab0-dummy"},
+            raw={"note": "automatic-daily-dummy"},
         )

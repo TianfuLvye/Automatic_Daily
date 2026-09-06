@@ -121,7 +121,7 @@ def test_rss_collector_local_feed():
       <channel>
         <title>Local Test</title>
         <item>
-          <title>Hello Fishnet RSS</title>
+          <title>Hello Automatic Daily RSS</title>
           <link>https://example.com/a?utm_source=x</link>
           <description><![CDATA[<p>摘要一段</p>]]></description>
           <content:encoded xmlns:content="http://purl.org/rss/1.0/modules/content/">
@@ -129,7 +129,7 @@ def test_rss_collector_local_feed():
           </content:encoded>
           <author>tester</author>
           <pubDate>Mon, 01 Jan 2024 12:00:00 GMT</pubDate>
-          <category>lab3</category>
+          <category>rss</category>
         </item>
         <item>
           <title>Long Hegel essay</title>
@@ -162,7 +162,7 @@ def test_rss_collector_local_feed():
         check("summary stripped", items[0].summary == "摘要一段")
         check("source enum", items[0].source == Source.RSS)
         check("published tz-aware", items[0].published_at is not None)
-        check("tags", "lab3" in items[0].tags)
+        check("tags", "rss" in items[0].tags)
         check("collector name", c.name.startswith("rss_"))
         long_item = next(it for it in items if "Long Hegel" in it.title)
         check("long rss summary kept full in content", len(long_item.content or "") > 500)
@@ -228,7 +228,7 @@ def test_subscriptions_render():
             store.close()
 
 
-def test_lab34_wechat_adr():
+def test_wechat_adr():
     adr = Path(__file__).resolve().parent.parent / "docs/adr/002-wechat-mp-strategy.md"
     example = Path(__file__).resolve().parent.parent / "config/wechat.yaml.example"
     wewe_compose = Path(__file__).resolve().parent.parent / "docker-compose.wewe-rss.yml"
@@ -620,7 +620,7 @@ def main():
     test_title_exclude_regex_drops_ads()
     test_subscriptions_render()
     test_text_cleanup_and_filters()
-    test_lab34_wechat_adr()
+    test_wechat_adr()
     test_live_rsshub_smoke()
     print("All RSS checks passed (live probes may have been skipped).")
 

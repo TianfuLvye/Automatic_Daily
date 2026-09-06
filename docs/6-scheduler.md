@@ -11,7 +11,7 @@
 4. **`used_in`**: 上了早报的 hash 标成 `YYYY-MM-DD-am`,晚报候选自动跳过。
 5. **`pipeline/health.py` + `render/health.py`**: **跑过但全失败** 与 **24h 没调度** 分开报,避免没开 `serve` 时满页假警报。
 6. **CLI**: `uv run main.py serve` / `render --edition am` / `health`;每个子命令可单独跑,不必等 cron。
-7. **测试**: `uv run python -m tests.test_lab6`(不启动常驻进程、不依赖外网)。
+7. **测试**: `uv run python -m tests.test_scheduler`(不启动常驻进程、不依赖外网)。
 
 ## 对应原则 / 验收点
 
@@ -61,7 +61,7 @@
 ## 本地怎么验收
 
 ```bash
-uv run python -m tests.test_lab6
+uv run python -m tests.test_scheduler
 uv run python -m tests.test_all          # 失败隔离 / used_in 回归
 
 # 手动出一期(不必等到明天早上)

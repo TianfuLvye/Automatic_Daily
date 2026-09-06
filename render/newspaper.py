@@ -18,7 +18,7 @@ from render.edition_to_client import write_client_edition
 from render.lede import make_lede
 from render.parse_edition import parse_edition_dir
 
-log = logging.getLogger("fishnet.newspaper")
+log = logging.getLogger("automatic_daily.newspaper")
 
 TEMPLATES_DIR = Path(__file__).resolve().parent / "newspaper_templates"
 MEASURE_CACHE = ROOT / "data" / ".cache" / "newspaper-measure.json"

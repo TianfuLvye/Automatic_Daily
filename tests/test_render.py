@@ -20,7 +20,7 @@ from render.newspaper import TEMPLATES_DIR
 from render.parse_edition import parse_edition_dir
 
 PASS = FAIL = 0
-DOC = ROOT / "docs" / "lab-08-render.md"
+DOC = ROOT / "docs" / "8-render.md"
 ADR_OLD = ROOT / "docs" / "adr" / "007-newspaper-grid.md"
 ADR_NEW = ROOT / "docs" / "adr" / "009-newspaper-layout-v04.md"
 SAMPLE = ROOT / "data" / "editions" / "2026-08-28-am"
@@ -37,7 +37,7 @@ def check(name: str, cond: bool, extra: str = "") -> None:
 
 
 print("\n[排版] 文档与 ADR")
-check("lab-08 笔记存在", DOC.exists())
+check("8-render 笔记存在", DOC.exists())
 check("ADR-007 仍在(已 superseded)", ADR_OLD.exists())
 check("ADR-009 存在", ADR_NEW.exists())
 if DOC.exists():

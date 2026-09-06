@@ -23,7 +23,7 @@ from render.subscriptions import collect_subscription_items
 from scheduler.run import build_scheduler, refresh_wechat_feeds
 
 ROOT = Path(__file__).resolve().parent.parent
-DOC = ROOT / "docs" / "lab-06-scheduler.md"
+DOC = ROOT / "docs" / "6-scheduler.md"
 ADR = ROOT / "docs" / "adr" / "005-scheduler-runtime.md"
 
 
@@ -225,7 +225,7 @@ def _seed_board(store: Store, n: int = 3) -> list[Item]:
             Source.WEIBO,
             Kind.HOTLIST,
             f"热搜{i}",
-            f"https://weibo.com/lab6/{i}",
+            f"https://weibo.com/scheduler/{i}",
             rank=i + 1,
             heat=1000.0 * (n - i),
             collector="hotlist_weibo",
@@ -238,8 +238,8 @@ def _seed_board(store: Store, n: int = 3) -> list[Item]:
         Source.ZHIHU,
         Kind.ARTICLE,
         "订阅长文",
-        "https://zhuanlan.zhihu.com/p/lab6",
-        collector="rss_lab6",
+        "https://zhuanlan.zhihu.com/p/scheduler",
+        collector="rss_scheduler",
         summary="摘要",
         content="这是一篇可以印在纸上的完整正文。",
     )
@@ -258,7 +258,7 @@ def test_edition_used_in_not_repeated():
         store,
         out_dir=tmp / "am",
         boards=["weibo"],
-        rss_collectors={"rss_lab6"},
+        rss_collectors={"rss_scheduler"},
         expected_collectors=[],
     )
     check("am wrote digest", am.digest_path.exists())
@@ -271,7 +271,7 @@ def test_edition_used_in_not_repeated():
         store,
         out_dir=tmp / "pm",
         boards=["weibo"],
-        rss_collectors={"rss_lab6"},
+        rss_collectors={"rss_scheduler"},
         expected_collectors=[],
     )
     check("pm does not reuse hashes", set(pm.used_hashes).isdisjoint(hashes), str(pm.used_hashes))
@@ -306,7 +306,7 @@ def test_edition_isolates_section_failure():
             store,
             out_dir=tmp / "iso",
             boards=["weibo"],
-            rss_collectors={"rss_lab6"},
+            rss_collectors={"rss_scheduler"},
             expected_collectors=["rss_broken"],
         )
     finally:
@@ -418,7 +418,7 @@ def test_round_robin_caps_one_feed():
 
 
 def test_docs():
-    check("lab-06 doc exists", DOC.exists())
+    check("6-scheduler doc exists", DOC.exists())
     text = DOC.read_text(encoding="utf-8")
     for key in ("APScheduler", "jitter", "coalesce", "used_in", "系统体检"):
         check(f"doc mentions {key}", key in text)

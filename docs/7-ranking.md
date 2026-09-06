@@ -73,7 +73,7 @@
 不要去碰正在跑 1 小时耐力测试的那个 terminal,也不要对 `data/fishnet.db` 跑 `render --edition`(那会写 `used_in`)。用测试库:
 
 ```bash
-uv run python -m tests.test_lab7
+uv run python -m tests.test_ranking
 uv run python -m tests.test_all          # 含打分/去重回归
 uv run main.py golden                    # 拟合画像,不采集、不出报
 

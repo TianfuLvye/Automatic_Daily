@@ -11,7 +11,7 @@ from pathlib import Path
 from notify.compose import DigestMail
 from notify.config import SmtpConfig
 
-log = logging.getLogger("fishnet.notify.email")
+log = logging.getLogger("automatic_daily.notify.email")
 
 _ATTACH_NAME = {
     "digest.pdf": "自动日报.pdf",
@@ -30,8 +30,8 @@ def build_message(
     msg["From"] = smtp.from_addr
     msg["To"] = ", ".join(smtp.to_addrs)
     msg["Date"] = formatdate(localtime=True)
-    msg["Message-ID"] = make_msgid(domain="fishnet.local")
-    msg["X-Fishnet-Edition"] = mail.edition_id
+    msg["Message-ID"] = make_msgid(domain="automatic-daily.local")
+    msg["X-Automatic-Daily-Edition"] = mail.edition_id
     if extra_headers:
         for key, value in extra_headers.items():
             msg[key] = value

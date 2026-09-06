@@ -1,7 +1,7 @@
 [project]
-name = "fishnet-reference"
+name = "automatic-daily"
 version = "0.1.0"
-description = "Add your description here"
+description = "Automatic Daily newspaper pipeline"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [

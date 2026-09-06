@@ -4,10 +4,10 @@
 
 用法:
   # 你自己跑完整 6 小时
-  uv run python -m tests.test_lab1_endurance --hours 6
+  uv run python -m tests.test_hotlist_endurance --hours 6
 
   # 开发冒烟(~3 分钟,默认间隔 60s,约 3 轮)
-  uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
+  uv run python -m tests.test_hotlist_endurance --minutes 3 --interval 60
 
 退出码:
   0 = 全程无崩溃,且至少一轮「≥5 个平台成功入库」
@@ -28,7 +28,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 # 单板失败会被安全壳吞掉;连跑时不要把整段 traceback 刷屏
-logging.getLogger("fishnet").setLevel(logging.ERROR)
+logging.getLogger("automatic_daily").setLevel(logging.ERROR)
 
 from core.base import run_collector
 from core.registry import all_collectors
@@ -54,7 +54,7 @@ def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
         "--db",
         type=Path,
         default=Path("data/fishnet_endurance.db"),
-        help="专用测试库,避免污染日常 fishnet.db",
+        help="专用测试库,避免污染日常数据库",
     )
     p.add_argument(
         "--min-ok-boards",

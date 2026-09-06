@@ -18,7 +18,7 @@ from notify.config import (
 )
 from notify.email import build_message, send_message
 
-log = logging.getLogger("fishnet.notify")
+log = logging.getLogger("automatic_daily.notify")
 
 RECORD_NAME = "notify.json"
 

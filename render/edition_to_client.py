@@ -15,7 +15,7 @@ from typing import Any
 from render.edition_to_articles import edition_to_articles, _norm_title
 from render.parse_edition import EditionMeta, parse_edition_dir
 
-log = logging.getLogger("fishnet.client")
+log = logging.getLogger("automatic_daily.client")
 
 BRAND = "自动日报"
 PERIOD_LABEL = {"am": "早报", "pm": "晚报"}

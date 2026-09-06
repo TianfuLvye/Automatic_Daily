@@ -46,7 +46,7 @@
 ```bash
 uv sync
 uv run playwright install chromium
-uv run python -m tests.test_lab8          # 转换器 + 模板加载,不跑全量拼版
+uv run python -m tests.test_render          # 转换器 + 模板加载,不跑全量拼版
 uv run python -m tests.test_all
 
 # 只排版,不重跑打分、不打 used_in

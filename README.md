@@ -1,6 +1,6 @@
-# Fishnet 参考实现
+# Automatic Daily 参考实现
 
-项目背景与早期设计记录见仓库根目录的历史手册。
+项目背景与早期设计记录见 [docs/archive/](./docs/archive/)。
 
 设计笔记（每个功能为什么这样实现）见 [`docs/`](./docs/README.md)。
 
@@ -12,12 +12,12 @@
 cp .env.example .env          # 已有可跳过;SMTP 见 FISHNET_SMTP_*
 # 若以前用 docker run --name dailyhot 占着 6688: docker rm -f dailyhot
 docker compose up -d --build
-docker compose logs -f fishnet
+docker compose logs -f automatic-daily
 ```
 
 `./data` 和 `./config` 挂在容器外。`docker compose down` 再 `up` 不会丢库、不会丢已出的报纸。
 
-本机 `uv run main.py …` 仍打 `127.0.0.1:6688` / `:1200`。不要和容器里的 `serve` 叠跑两份调度——调试前先 `docker compose stop fishnet`。
+本机 `uv run main.py …` 仍打 `127.0.0.1:6688` / `:1200`。不要和容器里的 `serve` 叠跑两份调度——调试前先 `docker compose stop automatic-daily`。
 
 公众号另叠 WeWe:
 
@@ -25,7 +25,7 @@ docker compose logs -f fishnet
 docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 ```
 
-设计笔记:[docs/lab-09-compose.md](./docs/lab-09-compose.md)。
+设计笔记:[docs/9-compose.md](./docs/9-compose.md)。
 
 ## 环境
 
@@ -36,7 +36,7 @@ uv sync
 docker compose up -d dailyhot rsshub redis
 # 知乎等路由需要 Cookie:把 ZHIHU_COOKIES 写进 .env 后,必须重建容器才会读到:
 # docker compose up -d --force-recreate rsshub
-# 公众号（可选）: 见 docs/lab-03-rsshub.md
+# 公众号（可选）: 见 docs/3-rsshub.md
 # docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 ```
 
@@ -71,24 +71,24 @@ uv run main.py render --section all
 
 ```bash
 uv run python -m tests.test_all        # 核心单测
-uv run python -m tests.test_lab1       # 热榜逻辑 + API 连通性
-uv run python -m tests.test_lab2       # 关键词 DSL + keywords.yaml
-uv run python -m tests.test_lab3       # RSS / 订阅版面
-uv run python -m tests.test_lab4       # MediaCrawler 隔离 / fixture 入库
-uv run python -m tests.test_lab5       # 正文抽取 / 缓存 / 降级
+uv run python -m tests.test_hotlist       # 热榜逻辑 + API 连通性
+uv run python -m tests.test_keywords       # 关键词 DSL + keywords.yaml
+uv run python -m tests.test_rss       # RSS / 订阅版面
+uv run python -m tests.test_targeted       # MediaCrawler 隔离 / fixture 入库
+uv run python -m tests.test_extract       # 正文抽取 / 缓存 / 降级
 uv run python -m tests.test_transcript # 口播并节打包 / BV 解析 / 下载头
 uv run python -m tests.test_drip       # 滴灌游标 / 口播栏见报
-uv run python -m tests.test_lab6       # 调度配置 / 出报隔离 / 体检
-uv run python -m tests.test_lab7       # 黄金集 / 两阶段 / 折叠 / 反馈 / A/B
-uv run python -m tests.test_lab8       # 期次 → articles.json / 模板加载
-uv run python -m tests.test_lab9       # 通道选择 / 邮件组装 / Compose 结构(不连 SMTP)
+uv run python -m tests.test_scheduler       # 调度配置 / 出报隔离 / 体检
+uv run python -m tests.test_ranking       # 黄金集 / 两阶段 / 折叠 / 反馈 / A/B
+uv run python -m tests.test_render       # 期次 → articles.json / 模板加载
+uv run python -m tests.test_notify       # 通道选择 / 邮件组装 / Compose 结构(不连 SMTP)
 uv run python -m tests.test_client     # 移动端 edition.json
 
 # 长时间稳定性(验收标准:6 小时无崩溃)
-uv run python -m tests.test_lab1_endurance --hours 6
+uv run python -m tests.test_hotlist_endurance --hours 6
 
 # 开发冒烟(~3 分钟)
-uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
+uv run python -m tests.test_hotlist_endurance --minutes 3 --interval 60
 ```
 
 依赖:`numpy`、`PyYAML`、`httpx`、`feedparser`、`newspaper-layout`、`playwright` 等(见 `pyproject.toml`)。排版需要本机 Chromium：`uv run playwright install chromium`，或设置 `CHROMIUM_PATH`。
@@ -114,7 +114,7 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 | render/subscriptions.py | 3 | 订阅更新 → subscriptions.md |
 | pipeline/keyword.py | 2 | must/any/exclude/weight/sections/aliases + filter_matched |
 | config/keywords.yaml | 2 | ≥5 组关键词（财经/政经/AI） |
-| docker-compose.yml | 3/9.2 | 全家桶:fishnet + DailyHot + RSSHub + Redis |
+| docker-compose.yml | 采集/调度 | 全家桶:Automatic Daily + DailyHot + RSSHub + Redis |
 | docker-compose.wewe-rss.yml | 3.4 | 可选 WeWe RSS（公众号 → RSS） |
 | docs/adr/002-wechat-mp-strategy.md | 3.4 | 公众号方案 ADR(已接入章北海) |
 | docs/adr/003-mediacrawler-scope.md | 4 | MediaCrawler 只覆盖指定小红书创作者 |
@@ -134,14 +134,14 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 | render/newspaper.py | 8 | newspaper-layout v0.4 → HTML + PDF |
 | render/newspaper_templates/ | 8 | Guardian 模板 |
 | notify/ | 9.1 | 通道选择 + SMTP(摘要正文,PDF 附件) |
-| Dockerfile / docker-compose.yml | 9.2 | 全家桶:fishnet + DailyHot + RSSHub + Redis |
+| Dockerfile / docker-compose.yml | 部署 | 全家桶:Automatic Daily + DailyHot + RSSHub + Redis |
 | docs/adr/006-embed-backend.md | 7 | 不上 chromadb 的理由 |
 | docs/adr/007-newspaper-grid.md | 8 | 旧网格方案（superseded） |
 | docs/adr/009-newspaper-layout-v04.md | 8 | 为什么换成 v0.4 模板拼版 |
 | docs/adr/008-bilibili-transcript-whitelist.md | — | B 站列 BV；合集滴灌进 04 口播栏 |
-| docs/lab-08-render.md | 排版 | 排版设计笔记 |
-| docs/lab-09-notify.md | 推送 | 邮件推送设计笔记 |
-| docs/lab-09-compose.md | 部署 | Compose 全家桶 |
+| docs/8-render.md | 排版 | 排版设计笔记 |
+| docs/9-notify.md | 推送 | 邮件推送设计笔记 |
+| docs/9-compose.md | 部署 | Compose 全家桶 |
 | docs/adr/010-notify-email.md | 9.1 | 为什么主通道是 SMTP、为什么不内联 A3 HTML |
 | docs/adr/011-compose-runtime.md | 9.2 | 为什么 URL 用环境变量覆盖、数据 bind mount |
 
@@ -150,5 +150,5 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 - 直播抓取:本机扫码 MediaCrawler + 填写 `targeted.creator_id`(fixture 路径已验收)
 - 运行完善:90 天归档、磁盘水位告警;Telegram / 飞书提醒
 - 知乎收藏夹 id 填进 `config/golden.yaml` 后 `golden --refresh`,用你的真收藏替换冷启动 seed
-- 配 `FISHNET_LLM_API_KEY` 后评委从启发式切到 LLM(每期仍 ≤150 次,用 Flash 文本模型);头版综述也会走 Flash;配图挑选走 Visual
+- 配 `FISHNET_LLM_API_KEY` 后评委从启发式切到 LLM(每期仍 ≤150 次,用 Flash 文本模型);头版综述也会走 Flash;配图挑选走 Visual。`FISHNET_*` 是兼容性的环境变量前缀。
 - 读书滴灌（章节列表复用 `core/drip.py`）

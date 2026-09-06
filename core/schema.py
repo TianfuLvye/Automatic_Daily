@@ -1,4 +1,4 @@
-"""Fishnet 数据契约。
+"""Automatic Daily 数据契约。
 
 全系统唯一的数据结构。任何 collector 的输出、任何 pipeline 的输入,
 都必须是 Item。改这个文件等于改全系统的 ABI,请慎重。

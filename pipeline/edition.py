@@ -26,7 +26,7 @@ from render.subscriptions import (
     write_item_files,
 )
 
-log = logging.getLogger("fishnet.edition")
+log = logging.getLogger("automatic_daily.edition")
 CST = timezone(timedelta(hours=8))
 
 PLACEHOLDER = "_本栏目今日无数据。_"

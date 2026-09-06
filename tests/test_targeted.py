@@ -50,7 +50,7 @@ def test_jsonl_to_item_and_store():
     check("has author", bool(it.author), str(it.author))
     check("collector prefix", it.collector.startswith("xhs_"), it.collector)
 
-    tmp = Path(tempfile.mkdtemp()) / "lab4.db"
+    tmp = Path(tempfile.mkdtemp()) / "targeted.db"
     store = Store(tmp)
     new, dup = store.upsert_items(items)
     check("first upsert all new", new == len(items) and dup == 0, f"new={new} dup={dup}")

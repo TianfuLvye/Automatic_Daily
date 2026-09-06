@@ -10,7 +10,7 @@
 3. **默认 collect 不带它**: Playwright 太重,只有 `--only-targeted` / `--only xhs_*` 才跑。
 4. **笔记**: `docs/notes/anti-crawling.md` 回答 4.2 四个问题。
 5. **ADR-003**: MediaCrawler 只覆盖指定小红书创作者;搜索式采集不做。
-6. **测试**: `uv run python -m tests.test_lab4`(fixture → Item → SQLite,不启动浏览器)。
+6. **测试**: `uv run python -m tests.test_targeted`(fixture → Item → SQLite,不启动浏览器)。
 
 ## 对应验收点
 
@@ -43,7 +43,7 @@
 ## 本地怎么验收
 
 ```bash
-uv run python -m tests.test_lab4
+uv run python -m tests.test_targeted
 
 # 直播抓取(需要本机扫码,任选):
 git clone --depth 1 https://github.com/NanmiCoder/MediaCrawler third_party/MediaCrawler

@@ -1,16 +1,16 @@
 # Docker Compose 全家桶
 
-> **范围**: 一条命令拉起 fishnet + DailyHotApi + RSSHub + Redis。不做 Telegram、不做 90 天归档。  
+> **范围**: 一条命令拉起 Automatic Daily + DailyHotApi + RSSHub + Redis。不做 Telegram、不做 90 天归档。
 > **决策**: 主程序进 compose;本机 URL 写在 `settings.toml`,容器内用 `FISHNET_*_URL` 覆盖。见 [ADR-011](./adr/011-compose-runtime.md)。
 
 ## 本文记录了什么
 
 1. **`Dockerfile`**: Python 3.13 + uv + Playwright Chromium + 思源/Noto CJK 字体 + ffmpeg。入口 `docker/entrypoint.sh` → `main.py serve`。
-2. **`docker-compose.yml`**: `fishnet` / `dailyhot` / `rsshub` / `redis`。`data/` 与 `config/` 绑到主机,重建容器报纸和库还在。
+2. **`docker-compose.yml`**: `automatic-daily` / `dailyhot` / `rsshub` / `redis`。`data/` 与 `config/` 绑到主机,重建容器报纸和库还在。
 3. **服务名覆盖**: 容器里 `FISHNET_DAILYHOT_URL=http://dailyhot:6688`、`FISHNET_RSSHUB_URL=http://rsshub:1200`。本机 `uv run main.py` 仍打 `127.0.0.1`。
 4. **冷启动**: entrypoint 先探 DailyHot / RSSHub 最多约 60s;探不到也启动。采集失败隔离,下一 tick 再试。`restart: unless-stopped` 崩了拉起来。
-5. **WeWe 仍可选**: `-f docker-compose.wewe-rss.yml` 给 fishnet 注入 `FISHNET_WEWE_URL`,并把 `wechat.yaml` 里的 `127.0.0.1:4000` 改写成 `wewe-rss`。
-6. **测试**: `uv run python -m tests.test_lab9`(含 compose 结构 / URL 覆盖,不强制本机 `docker compose up`)。
+5. **WeWe 仍可选**: `-f docker-compose.wewe-rss.yml` 给 Automatic Daily 注入 `FISHNET_WEWE_URL`,并把 `wechat.yaml` 里的 `127.0.0.1:4000` 改写成 `wewe-rss`。
+6. **测试**: `uv run python -m tests.test_notify`(含 compose 结构 / URL 覆盖,不强制本机 `docker compose up`)。
 
 ## 对应原则 / 验收点
 
@@ -26,7 +26,7 @@
 
 ## 模块与函数设计笔记
 
-### `docker-compose.yml` · `fishnet`
+### `docker-compose.yml` · `automatic-daily`
 
 - **目的**: 把 `serve` 从笔记本进程变成可重启的容器。
 - **为什么 `settings.toml` 不改成 `http://rsshub:1200`**: 那会让本机 `uv run main.py collect` 失效。覆盖走环境变量,compose `environment` 优先于 `env_file`。
@@ -51,7 +51,7 @@
 ## 本地怎么验收
 
 ```bash
-cd fishnet-reference
+cd automatic-daily
 cp .env.example .env   # 已有 .env 可跳过;SMTP 仍按 9.1 填
 
 # 若以前 docker run --name dailyhot 占着 6688:
@@ -59,13 +59,13 @@ cp .env.example .env   # 已有 .env 可跳过;SMTP 仍按 9.1 填
 
 docker compose up -d --build
 docker compose ps
-# fishnet / dailyhot / rsshub / redis 应为 running(或 restarting 后变 running)
+# automatic-daily / dailyhot / rsshub / redis 应为 running(或 restarting 后变 running)
 
 # 结构单测(不要求 Docker 守护进程)
-uv run python -m tests.test_lab9
+uv run python -m tests.test_notify
 
 # 看调度是否起来
-docker compose logs -f fishnet
+docker compose logs -f automatic-daily
 
 # 冷启动:删容器但保留 ./data
 docker compose down
@@ -73,7 +73,7 @@ docker compose up -d
 # data/fishnet.db 与 data/editions/ 应还在;serve 继续跑
 
 # 停全家桶,本机调试时不要叠跑两份 serve
-docker compose stop fishnet
+docker compose stop automatic-daily
 uv run main.py serve
 ```
 

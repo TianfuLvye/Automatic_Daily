@@ -1,4 +1,4 @@
-# ADR-003 · MediaCrawler 在 Fishnet 里的定位与边界
+# ADR-003 · MediaCrawler 在 Automatic Daily 里的定位与边界
 
 - **状态**: 已接受
 - **日期**: 2026-08-23
@@ -34,7 +34,7 @@ config/sources.yaml  targeted:
     → Store.upsert_items
 ```
 
-- Fishnet **不 import** MediaCrawler。
+- Automatic Daily **不 import** MediaCrawler。
 - 默认 `uv run main.py collect` **不会**启动 Playwright。
 - 显式入口:`uv run main.py collect --only-targeted` 或 `--only xhs_小红书示例创作者`。
 

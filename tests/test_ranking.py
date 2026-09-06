@@ -25,7 +25,7 @@ from pipeline.rank import heat_only_order, is_rank_candidate, rank_items
 from pipeline.edition import produce_edition
 
 PASS = FAIL = 0
-DOC = ROOT / "docs" / "lab-07-ranking.md"
+DOC = ROOT / "docs" / "7-ranking.md"
 
 
 def check(name: str, cond: bool, extra: str = "") -> None:
@@ -73,7 +73,7 @@ for i in range(180):
             Source.ZHIHU if i % 3 else Source.NEWS,
             Kind.ARTICLE if i % 2 else Kind.HOTLIST,
             f"{'宁德时代订单可检验吗' if i % 17 == 0 else '热点快讯'}{i}",
-            f"https://example.com/lab7/{i}",
+            f"https://example.com/ranking/{i}",
             content=body * 3,
             summary=body,
             heat=1e6 - i * 1000,
@@ -227,7 +227,7 @@ st.upsert_items(
             Source.ZHIHU,
             Kind.ARTICLE,
             docs[i].title,
-            f"https://zhuanlan.zhihu.com/p/lab7-{i}",
+            f"https://zhuanlan.zhihu.com/p/ranking-{i}",
             content=docs[i].content,
             collector="rss_test",
             fetched_at=now,
@@ -277,7 +277,7 @@ rc_g = main(["golden", "--min-docs", "50"])
 check("golden CLI 拟合成功", rc_g == 0, str(rc_g))
 
 ab_dir = Path(tempfile.mkdtemp()) / "ab"
-# 用上面的临时库做 A/B,不碰正在跑耐力测试的 fishnet.db
+# 用上面的临时库做 A/B,不碰正在运行的日常数据库
 rc_ab = main(["--db", str(tmp2 / "ed.db"), "ab", "--kind", "am", "--out-dir", str(ab_dir)])
 # tmp2/ed.db 已 close,重新用有数据的库
 st3_path = Path(tempfile.mkdtemp()) / "ab.db"
@@ -296,7 +296,7 @@ check("批判文 > 营销文", hi.raw > lo.raw, f"{hi.raw} vs {lo.raw}")
 check("分数在 0-10", 0 <= lo.raw <= 10 and 0 <= hi.raw <= 10)
 
 print("\n[排序] 文档")
-check("lab-07 doc exists", DOC.exists())
+check("7-ranking doc exists", DOC.exists())
 if DOC.exists():
     t = DOC.read_text(encoding="utf-8")
     for key in ("两阶段", "黄金集", "事件聚类", "反馈", "A/B"):

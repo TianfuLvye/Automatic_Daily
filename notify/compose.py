@@ -207,7 +207,7 @@ def _text_body(edition_id: str, kind: str, stories: list[Story], attachments: li
     else:
         lines.append("本期没有可附的 PDF(排版失败时仍可看上面的目录)。")
     lines.append("")
-    lines.append("本邮件由 fishnet 自动发送,仅供个人阅读。")
+    lines.append("本邮件由 Automatic Daily 自动发送,仅供个人阅读。")
     return "\n".join(lines).strip() + "\n"
 
 
@@ -250,7 +250,7 @@ def _html_body(edition_id: str, kind: str, stories: list[Story], attachments: li
         parts.append(f'<p style="color:#666;margin-top:24px">完整报纸见附件：{names}</p>')
     else:
         parts.append('<p style="color:#666;margin-top:24px">本期没有 PDF 附件。</p>')
-    parts.append('<p style="color:#999;font-size:12px">fishnet 自动发送 · 仅供个人阅读</p>')
+    parts.append('<p style="color:#999;font-size:12px">Automatic Daily 自动发送 · 仅供个人阅读</p>')
     parts.append("</body></html>")
     return "\n".join(parts)
 

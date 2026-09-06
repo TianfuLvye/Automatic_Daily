@@ -9,13 +9,13 @@
 2. **订阅清单 ≥10 源**:`config/sources.yaml` 的 `feeds:` 加上 `wechat.yaml` 公众号（不含个人 B 站 UP、「B站每周必看」）。
 3. **通用 `RSSCollector`**:`collectors/rss_generic.py`。
 4. **公众号 3.4**:[ADR-002](./adr/002-wechat-mp-strategy.md) + `docker-compose.wewe-rss.yml` + 下文部署步骤。
-5. **版面**:`render/sections/subscriptions.md`；测试 `tests/test_lab3.py`。
+5. **版面**:`render/sections/subscriptions.md`；测试 `tests/test_rss.py`。
 
 ## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
-| 自建 RSSHub 跑通 | `docker compose up -d rsshub redis`(9.2 之后全量 `up -d` 会连 fishnet serve) |
+| 自建 RSSHub 跑通 | `docker compose up -d rsshub redis`(Compose 部署后全量 `up -d` 会连 automatic-daily serve) |
 | ≥10 订阅源 | `sources.yaml` feeds |
 | 知乎 + 新番 + 财经 | Thoughts Memo/差评君；知乎日报早报；Bangumi 今日放送；华尔街日报/见闻。不定个人 B 站 UP |
 | 公众号方案 | ADR-002 + WeWe RSS compose 文件 |
@@ -23,11 +23,11 @@
 
 ## 3.4 部署 WeWe RSS（手把手）
 
-WeWe RSS 把「微信公众号」变成标准 RSS/Atom，Fishnet 只消费 feed URL，不碰微信登录。
+WeWe RSS 把「微信公众号」变成标准 RSS/Atom，Automatic Daily 只消费 feed URL，不碰微信登录。
 
 ### 第一步：准备授权码
 
-在 `fishnet-reference` 目录：
+在 Automatic Daily 实现目录：
 
 ```bash
 cp .env.example .env
@@ -40,7 +40,7 @@ cp .env.example .env
 ### 第二步：启动容器
 
 ```bash
-cd fishnet-reference
+cd automatic-daily
 docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 ```
 
@@ -64,7 +64,7 @@ docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 
 **注意**: 短时间大量添加容易被封控，建议先加 1–2 个号试跑。
 
-### 第五步：接入 Fishnet
+### 第五步：接入 Automatic Daily
 
 ```bash
 cp config/wechat.yaml.example config/wechat.yaml
@@ -117,7 +117,7 @@ uv run main.py render --section subscriptions
 
 ```bash
 docker compose up -d rsshub redis
-uv run python -m tests.test_lab3
+uv run python -m tests.test_rss
 uv run main.py collect --only-rss
 uv run main.py render --section subscriptions
 ```

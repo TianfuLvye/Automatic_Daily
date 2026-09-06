@@ -38,7 +38,7 @@ MediaCrawler 的策略(README 原话):「无需 JS 逆向;利用保留登录态�
 | 部署 | 要有显示或 headless 浏览器,CI/服务器都麻烦 | 一个容器即可 |
 | 可观测性 | 可开窗口看验证码 | 只能看状态码 |
 
-定向采集把 MediaCrawler **丢进子进程**,就是为了不让这份代价污染 Fishnet 主进程(热榜 / RSS 仍然是轻量 httpx + feedparser)。
+定向采集把 MediaCrawler **丢进子进程**,就是为了不让这份代价污染 Automatic Daily 主进程(热榜 / RSS 仍然是轻量 httpx + feedparser)。
 
 ## 4. 限速在哪一层? 并发调到 10 会怎样?(想清楚,别真试)
 

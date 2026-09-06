@@ -18,7 +18,7 @@ from enrich.extract import (
 from tests.fixtures.extract_pages import PAGES
 
 ROOT = Path(__file__).resolve().parent.parent
-DOC = ROOT / "docs" / "lab-05-extract.md"
+DOC = ROOT / "docs" / "5-extract.md"
 
 
 def check(name: str, cond: bool, detail: str = "") -> None:
@@ -109,7 +109,7 @@ def test_robots_blocks():
 
 
 def test_enrich_store_fills_content():
-    tmp = Path(tempfile.mkdtemp()) / "lab5.db"
+    tmp = Path(tempfile.mkdtemp()) / "extract.db"
     store = Store(tmp)
     url, html, _want = PAGES[0]
     item = Item(
@@ -118,7 +118,7 @@ def test_enrich_store_fills_content():
         title="港口恢复通航",
         url=url,
         summary="短摘要",
-        collector="test_lab5",
+        collector="test_extract",
     )
     store.upsert_items([item])
     missing = store.items_missing_content(limit=10)
@@ -320,7 +320,7 @@ def test_rss_summary_fallback_when_html_empty():
         title="被墙的公众号",
         url="https://blocked.example.com/secret",
         summary=summary,
-        collector="test_lab5",
+        collector="test_extract",
     )
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -350,7 +350,7 @@ def test_fallback_does_not_clobber_longer_content():
         url="https://www.zhihu.com/question/1/answer/2",
         summary=stub,
         content=long_body,
-        collector="test_lab5",
+        collector="test_extract",
     )
 
     def handler(request: httpx.Request) -> httpx.Response:
@@ -381,7 +381,7 @@ def test_restore_truncated_rss_from_raw():
 
     long_body = "黑格尔不配被称为哲学家，他只不过是个故弄玄虚的臭神棍。" * 40
     stub = long_body[:500]
-    tmp = Path(tempfile.mkdtemp()) / "lab5-restore.db"
+    tmp = Path(tempfile.mkdtemp()) / "extract-restore.db"
     store = Store(tmp)
     item = Item(
         source=Source.ZHIHU,
@@ -406,7 +406,7 @@ def test_restore_skips_already_full_body():
     from enrich.extract import restore_truncated_rss_content
 
     body = "已经抽好的干净正文。" * 80
-    tmp = Path(tempfile.mkdtemp()) / "lab5-skip.db"
+    tmp = Path(tempfile.mkdtemp()) / "extract-skip.db"
     store = Store(tmp)
     item = Item(
         source=Source.FINANCE,
@@ -440,7 +440,7 @@ def test_enrich_store_keeps_longer_content():
         url="https://www.zhihu.com/question/1/answer/99",
         summary=stub,
         content=long_body,
-        collector="test_lab5",
+        collector="test_extract",
     )
     store.upsert_items([item])
 
@@ -652,7 +652,7 @@ def test_materialize_writes_local_jpeg():
 
 
 def test_docs():
-    check("lab-05 doc exists", DOC.exists())
+    check("5-extract doc exists", DOC.exists())
     text = DOC.read_text(encoding="utf-8")
     for key in ("trafilatura", "缓存", "robots", "降级", "华尔街见闻", "个人订阅"):
         check(f"doc mentions {key}", key in text)

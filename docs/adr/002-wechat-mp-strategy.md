@@ -2,11 +2,11 @@
 
 - **状态**: 已接受；**已接入 1 个号**（章北海的自然选择）
 - **日期**: 2026-08-09（接入 2026-08-23）
-- **背景**: 公众号是 Fishnet 愿景里「指定信源」的重要一块，但微信没有公开 RSS/订阅 API。
+- **背景**: 公众号是 Automatic Daily 愿景里「指定信源」的重要一块，但微信没有公开 RSS/订阅 API。
 
 ## 决策
 
-**不把公众号抓取写进 Fishnet 主仓库**；采用 **外部 RSS 中转服务 → RSSHub/直连 URL → `RSSCollector`** 的标准订阅链路。
+**不把公众号抓取写进 Automatic Daily 主仓库**；采用 **外部 RSS 中转服务 → RSSHub/直连 URL → `RSSCollector`** 的标准订阅链路。
 
 首选自建 **[WeWe RSS](https://github.com/cooderl/wewe-rss)**（微信读书接口中转），备选商业 **wechat2rss**；**不采用**搜狗微信搜索爬虫，**不采用**新榜 Cookie 路由作为长期方案。
 
@@ -26,18 +26,18 @@
 微信公众号
     → WeWe RSS（独立容器，需微信读书登录态）
     → http://wewe-rss:4000/feed/...  （Atom/RSS）
-    → Fishnet RSSCollector（已有）
+    → Automatic Daily RSSCollector（已有）
     → items 表（source=wechat_mp）
     → subscriptions.md / 后续打分（w_hot=0）
 ```
 
-Fishnet 侧**只消费 RSS**，不碰微信登录、不存 Cookie（Cookie 留在 WeWe RSS 容器 / `.env`）。
+Automatic Daily 侧**只消费 RSS**，不碰微信登录、不存 Cookie（Cookie 留在 WeWe RSS 容器 / `.env`）。
 
 ## 当前状态（已知限制）
 
 - **已接入**: `config/wechat.yaml` 中的「章北海的自然选择」,`collect --only-rss` 能写入 `source=wechat_mp`。
 - 其它号可按同样方式加 feed URL;短时间批量加号可能触发微信读书「小黑屋」。
-- WeWe RSS 登录态在独立容器里,Fishnet 仍只消费 RSS。
+- WeWe RSS 登录态在独立容器里,Automatic Daily 仍只消费 RSS。
 
 ## 配置约定
 
@@ -47,7 +47,7 @@ Fishnet 侧**只消费 RSS**，不碰微信登录、不存 Cookie（Cookie 留�
 
 ## 后果
 
-- **正面**: 采集与微信反爬解耦；Fishnet 主进程无 Playwright/微信依赖；符合「失败隔离」原则。
+- **正面**: 采集与微信反爬解耦；Automatic Daily 主进程无 Playwright/微信依赖；符合「失败隔离」原则。
 - **负面**: 多一个要维护的容器；微信读书接口变更时需跟进 WeWe RSS 上游。
 - **合规**: 自用、低频、不再分发；PDF 只放摘要+链接（见历史手册相关章节）。
 

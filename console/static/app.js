@@ -281,9 +281,9 @@ async function openWewe() {
       .map(
         (it) => `
         <label class="wewe-item">
-          <input type="checkbox" value="${escapeHtml(it.id)}" ${it.in_fishnet ? "disabled" : "checked"} />
+          <input type="checkbox" value="${escapeHtml(it.id)}" ${it.in_automatic_daily ? "disabled" : "checked"} />
           <span>${escapeHtml(it.name)}</span>
-          <span class="origin">${it.in_fishnet ? "已接入" : it.id}</span>
+          <span class="origin">${it.in_automatic_daily ? "已接入" : it.id}</span>
         </label>`,
       )
       .join("");

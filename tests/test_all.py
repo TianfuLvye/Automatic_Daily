@@ -71,14 +71,14 @@ check("naive 视作 CST 转 UTC", e.published_at.tzinfo is not None and e.publis
 print("\n[基础] 幂等入库 —— 连跑三次库里仍是 1 条")
 tmp = tempfile.mkdtemp()
 st = Store(os.path.join(tmp, "t.db"))
-it = lambda: Item(Source.OTHER, Kind.ARTICLE, "Hello Fishnet",
+it = lambda: Item(Source.OTHER, Kind.ARTICLE, "Hello Automatic Daily",
                   "https://example.com/?utm_source=x", collector="dummy")
 r = [st.upsert_items([it()]) for _ in range(3)]
 check("三次 upsert 结果 (1,0)(0,1)(0,1)", r == [(1, 0), (0, 1), (0, 1)], str(r))
 check("库内仅 1 条", st.stats()["items"] == 1)
 
 print("\n[基础] 重复入库时补齐缺失正文(而非丢弃)")
-st.upsert_items([Item(Source.OTHER, Kind.ARTICLE, "Hello Fishnet",
+st.upsert_items([Item(Source.OTHER, Kind.ARTICLE, "Hello Automatic Daily",
                       "https://example.com/", content="正文来了", collector="enricher")])
 got = st.query_items()[0]
 check("content 被回填", got.content == "正文来了", str(got.content))

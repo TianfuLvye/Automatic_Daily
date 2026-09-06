@@ -26,7 +26,7 @@ from core.settings import Settings, load_settings
 from core.store import Store
 from pipeline.edition import produce_edition
 
-log = logging.getLogger("fishnet.scheduler")
+log = logging.getLogger("automatic_daily.scheduler")
 
 # 出报 07:00 / 19:00。开刷落在前两小时窗口的前一小时，给顺序拉号留余量。
 WEWE_REFRESH_JITTER_SECONDS = 3600

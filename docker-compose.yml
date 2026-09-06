@@ -1,7 +1,7 @@
 # Docker Compose 全家桶。
 #
 #   docker compose up -d
-#   拉起 fishnet(serve) + DailyHotApi + RSSHub + Redis。
+#   拉起 automatic-daily(serve) + DailyHotApi + RSSHub + Redis。
 #
 # 公众号 WeWe RSS 仍是可选叠加:
 #   docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
@@ -11,7 +11,7 @@
 #   docker compose up -d --force-recreate rsshub
 
 services:
-  fishnet:
+  automatic-daily:
     build: .
     volumes:
       - ./data:/app/data

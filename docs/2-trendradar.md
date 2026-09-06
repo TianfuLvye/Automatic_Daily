@@ -6,7 +6,7 @@
 2. **关键词 DSL 落地**: `pipeline/keyword.py`（must / any / exclude / weight / sections / aliases）+ `annotate` / `filter_matched` 加工层接口。
 3. **`config/keywords.yaml`**: ≥5 组，覆盖财经、政治经济、AI/科技，每组带 exclude。
 4. **ADR-001**: 明确「只借鉴设计、不把 TrendRadar 当数据源」——见 `docs/adr/001-why-not-trendradar.md`。
-5. **验收测试**: `uv run python -m tests.test_lab2`（YAML 覆盖面 + 匹配语义 + 过滤接口）。
+5. **验收测试**: `uv run python -m tests.test_keywords`（YAML 覆盖面 + 匹配语义 + 过滤接口）。
 
 **关于验收「TrendRadar 成功推送过一次」**: 真实飞书/Telegram/邮箱推送需要你在 TrendRadar 仓库里配置 webhook / bot token（密钥不应进本仓库）。本仓库完成的是可复用的关键词引擎与 ADR；推送渠道联调请在本机 TrendRadar 目录按官方 README 配好通知后执行一次 `docker compose` 或 Actions。设计结论不依赖那一次推送是否已发生。
 
@@ -15,7 +15,7 @@
 | 验收 | 落点 |
 |---|---|
 | keywords.yaml ≥5 组，盖财经/政经/AI | `config/keywords.yaml` |
-| must/any/exclude/weight + 单测 | `pipeline/keyword.py` + `tests/test_lab2.py`（及 `tests/test_all.py` 关键词段） |
+| must/any/exclude/weight + 单测 | `pipeline/keyword.py` + `tests/test_keywords.py`（及 `tests/test_all.py` 关键词段） |
 | ADR-001 | `docs/adr/001-why-not-trendradar.md` |
 | TrendRadar 推送一次 | 需你在 TrendRadar 实例填通知密钥（见上） |
 
@@ -43,9 +43,8 @@
 ## 本地怎么验收
 
 ```bash
-uv run python -m tests.test_lab2
-# 也可顺带跑旧套件里的 Lab2 段
-uv run python -m tests.test_all   # 需 numpy/sklearn(Lab7);Lab2 段不依赖外网
+uv run python -m tests.test_keywords
+uv run python -m tests.test_all   # 需 numpy/sklearn；关键词测试本身不依赖外网
 ```
 
 试匹配（在项目根）:
@@ -86,7 +85,7 @@ for r in e.match('宁德时代获动力电池大额订单'):
 
 **我们怎么落地**
 
-| TrendRadar | Fishnet `keywords.yaml` |
+| TrendRadar | Automatic Daily `keywords.yaml` |
 |---|---|
 | `+宁德时代` | `must: ["宁德时代"]` |
 | 普通词多行 | `any: [...]` |
@@ -108,13 +107,13 @@ for r in e.match('宁德时代获动力电池大额订单'):
 - 推送侧 `analyzer.py`：incremental 模式只处理新增；当天第一次可把整批标成新。
 - 第一次抓取时逻辑上要小心「全是新」——代码里区分了「无历史」与「增量模式第一次推送」。
 
-**Fishnet 热榜采集**
+**Automatic Daily 热榜采集**
 
 - 身份是 `content_hash`（URL 优先），不是裸标题。
 - `newly_entered(board, window)`：**时间窗内出现过，且窗前该 board 从未出现**——显式时间窗口，不是「上一批次」。
 - `fast_rising` 用快照算 \(\Delta r\)，这是 TrendRadar 热度箭头的亲戚，但公式我们自己定。
 
-| 维度 | TrendRadar | Fishnet 热榜采集 |
+| 维度 | TrendRadar | Automatic Daily 热榜采集 |
 |---|---|---|
 | 新身份 | 标题（+源）为主 | `content_hash` |
 | 新的参照 | 上一批次 / 当日历史 | 滑动时间窗 vs 窗前 |

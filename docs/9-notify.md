@@ -1,6 +1,6 @@
 # 推送：通道选择 + SMTP 邮件
 
-> **范围**: 9.1 选通道,并把已有 `digest.pdf` 发到邮箱。不做客户端、不做 Telegram。Docker 全家桶见 [lab-09-compose.md](./lab-09-compose.md)。  
+> **范围**: 选通道,并把已有 `digest.pdf` 发到邮箱。不做客户端、不做 Telegram。Docker 全家桶见 [9-compose.md](./9-compose.md)。
 > **决策**: 邮件为主通道;正文是摘要,PDF 是附件。见 [ADR-010](./adr/010-notify-email.md)。
 
 ## 本文记录了什么
@@ -21,7 +21,7 @@
 | 子命令独立可跑 | 没配 SMTP 时 `push` 返回 0 并打印跳过 |
 | 出报后能送到面前 | `_job_edition` 成功后调 `_job_push` |
 
-连续 7 天早晚两报、90 天归档、磁盘水位仍属运行验收,本文不验收。Docker 全家桶见 [lab-09-compose.md](./lab-09-compose.md)。
+连续 7 天早晚两报、90 天归档、磁盘水位仍属运行验收,本文不验收。Docker 全家桶见 [9-compose.md](./9-compose.md)。
 
 ## 模块与函数设计笔记
 
@@ -60,7 +60,7 @@
 
 ```bash
 # 不连邮箱
-uv run python -m tests.test_lab9
+uv run python -m tests.test_notify
 uv run main.py push --dry-run --edition 2026-09-01-pm
 
 # 真发一封:复制 .env.example 里 FISHNET_SMTP_* ,QQ/163 填授权码

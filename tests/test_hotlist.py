@@ -6,8 +6,8 @@
   - hotlist.md 渲染
   - (可选) 对本地 DailyHotApi 的连通性冒烟
 
-长时间连跑请用: python -m tests.test_lab1_endurance --hours 6
-短冒烟请用:     python -m tests.test_lab1_endurance --minutes 3
+长时间连跑请用: python -m tests.test_hotlist_endurance --hours 6
+短冒烟请用:     python -m tests.test_hotlist_endurance --minutes 3
 """
 from __future__ import annotations
 
@@ -92,7 +92,7 @@ check("离谱时间戳不炸", _parse_ts(7_670_000_000_000_000_000) is None)
 
 print("\n[热榜] newly_entered / fast_rising")
 tmp = tempfile.mkdtemp()
-st = Store(os.path.join(tmp, "lab1.db"))
+st = Store(os.path.join(tmp, "hotlist.db"))
 now = datetime.now(timezone.utc)
 t_old = (now - timedelta(hours=10)).isoformat()
 t_mid = (now - timedelta(hours=3)).isoformat()

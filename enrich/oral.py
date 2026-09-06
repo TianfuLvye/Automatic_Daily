@@ -14,7 +14,7 @@ from core.store import Store
 from core.text import item_published_at
 from enrich.bilibili import catalog_path, load_targets
 
-log = logging.getLogger("fishnet.oral")
+log = logging.getLogger("automatic_daily.oral")
 
 UP_WINDOW_HOURS = 48
 MAX_SKIP_GONE = 5

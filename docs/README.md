@@ -1,4 +1,4 @@
-# Fishnet 设计笔记（docs）
+# Automatic Daily 设计笔记（docs）
 
 这里不是 API 手册，而是**「为什么这样实现」**的笔记。
 
@@ -8,19 +8,19 @@
 
 | 文档 | 功能 | 一句话 |
 |---|---|---|
-| [lab-00-foundation.md](./lab-00-foundation.md) | 基础 | 数据契约、幂等入库、CLI、假采集器跑通全链路 |
-| [lab-01-hotlist.md](./lab-01-hotlist.md) | 热榜聚合 | DailyHotApi 多榜采集、新上榜/蹿升、产出 hotlist.md |
-| [lab-02-trendradar.md](./lab-02-trendradar.md) | 关键词过滤 | 关键词 DSL、ADR-001；文末含 TrendRadar 精读笔记 |
-| [lab-03-rsshub.md](./lab-03-rsshub.md) | RSS 订阅 | 自部署、订阅、RSSCollector、WeWe RSS 部署指南 |
-| [lab-04-mediacrawler.md](./lab-04-mediacrawler.md) | 定向采集 | 子进程隔离、频率/并发、jsonl → Item |
-| [lab-05-extract.md](./lab-05-extract.md) | 正文抽取 | 站点路由 + 见闻 API + robots 个人 override、缓存、质量/RSS 降级 |
-| [lab-06-scheduler.md](./lab-06-scheduler.md) | 调度 | APScheduler 常驻、早晚出报、used_in、系统体检 |
-| [lab-07-ranking.md](./lab-07-ranking.md) | 个性化排序 | 黄金集、两阶段打分、事件折叠、反馈、A/B |
-| [lab-08-render.md](./lab-08-render.md) | 渲染 | 期次 Markdown → newspaper-layout v0.4 HTML/PDF |
-| [lab-09-notify.md](./lab-09-notify.md) | 推送 | 通道选邮件;摘要正文 + PDF 附件 |
-| [lab-09-compose.md](./lab-09-compose.md) | 部署 | Compose 全家桶;容器 URL 覆盖;冷启动自愈 |
+| [0-foundation.md](./0-foundation.md) | 基础 | 数据契约、幂等入库、CLI、假采集器跑通全链路 |
+| [1-hotlist.md](./1-hotlist.md) | 热榜聚合 | DailyHotApi 多榜采集、新上榜/蹿升、产出 hotlist.md |
+| [2-trendradar.md](./2-trendradar.md) | 关键词过滤 | 关键词 DSL、ADR-001；文末含 TrendRadar 精读笔记 |
+| [3-rsshub.md](./3-rsshub.md) | RSS 订阅 | 自部署、订阅、RSSCollector、WeWe RSS 部署指南 |
+| [4-mediacrawler.md](./4-mediacrawler.md) | 定向采集 | 子进程隔离、频率/并发、jsonl → Item |
+| [5-extract.md](./5-extract.md) | 正文抽取 | 站点路由 + 见闻 API + robots 个人 override、缓存、质量/RSS 降级 |
+| [6-scheduler.md](./6-scheduler.md) | 调度 | APScheduler 常驻、早晚出报、used_in、系统体检 |
+| [7-ranking.md](./7-ranking.md) | 个性化排序 | 黄金集、两阶段打分、事件折叠、反馈、A/B |
+| [8-render.md](./8-render.md) | 渲染 | 期次 Markdown → newspaper-layout v0.4 HTML/PDF |
+| [9-notify.md](./9-notify.md) | 推送 | 通道选邮件;摘要正文 + PDF 附件 |
+| [9-compose.md](./9-compose.md) | 部署 | Compose 全家桶;容器 URL 覆盖;冷启动自愈 |
 | [adr/001-why-not-trendradar.md](./adr/001-why-not-trendradar.md) | ADR-001 | 只借鉴 TrendRadar 设计、不依赖其运行时 |
-| [adr/002-wechat-mp-strategy.md](./adr/002-wechat-mp-strategy.md) | ADR-002 | 公众号走 WeWe RSS，Fishnet 只消费 RSS |
+| [adr/002-wechat-mp-strategy.md](./adr/002-wechat-mp-strategy.md) | ADR-002 | 公众号走 WeWe RSS，Automatic Daily 只消费 RSS |
 | [adr/003-mediacrawler-scope.md](./adr/003-mediacrawler-scope.md) | ADR-003 | MediaCrawler 只覆盖指定小红书创作者 |
 | [adr/004-extract-and-robots.md](./adr/004-extract-and-robots.md) | ADR-004 | 正文优先 RSS/API;robots 只放行订阅单篇;热榜不爬回答 |
 | [adr/005-scheduler-runtime.md](./adr/005-scheduler-runtime.md) | ADR-005 | APScheduler 在家跑;残缺出报;Actions 只做心跳 |
@@ -31,6 +31,8 @@
 | [adr/010-notify-email.md](./adr/010-notify-email.md) | ADR-010 | 推送主通道 SMTP;不内联 A3 HTML |
 | [adr/011-compose-runtime.md](./adr/011-compose-runtime.md) | ADR-011 | 全家桶进 Compose;本机 URL 用环境变量覆盖 |
 | [notes/anti-crawling.md](./notes/anti-crawling.md) | 反爬观察 | 登录态、签名、Playwright 代价、限速 |
+
+历史手册已归档到 [`archive/`](./archive/)。
 
 ## 后续设计笔记怎么写（模板）
 

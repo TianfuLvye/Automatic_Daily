@@ -9,7 +9,7 @@
 3. **增量检测**: 用 `rank_snapshots` 实现「过去 6 小时新上榜」与「排名蹿升」。
 4. **第一个 Markdown 产物**: `uv run main.py render --section hotlist` → `render/sections/hotlist.md`（今日新上榜 Top 20）。
 5. **注册表**: `core/registry.py` 读配置实例化采集器，`main.py collect` 默认跑全部热榜。
-6. **验收测试**: `tests/test_lab1.py`（逻辑）+ `tests/test_lab1_endurance.py`（连跑稳定性；开发用 3 分钟冒烟，正式验收用 6 小时）。
+6. **验收测试**: `tests/test_hotlist.py`（逻辑）+ `tests/test_hotlist_endurance.py`（连跑稳定性；开发用 3 分钟冒烟，正式验收用 6 小时）。
 
 对应愿景：微博 / B 站 / 知乎等热榜速览进报纸，且强调「新上榜 / 蹿升」，而不是每次复读整张榜。
 
@@ -83,13 +83,13 @@
 - **`--strict`**: 默认关闭（失败隔离：单榜挂了仍退出 0）；CI/验收想「必须全绿」时再打开。
 - **`stats` 打印 `by_source`**: 对应验收里那条手动 SQL，省得每次打开 sqlite3。
 
-### `tests/test_lab1.py` / `tests/test_lab1_endurance.py`
+### `tests/test_hotlist.py` / `tests/test_hotlist_endurance.py`
 
 - **目的**: 把验收标准变成可重复命令，而不是「我觉得跑起来了」。
 - **为什么拆成两个文件**:
-  - `test_lab1`: 快、可假数据，测公式与渲染，不依赖「连跑多久」。
-  - `test_lab1_endurance`: 真打 API，测崩溃/连续失败；`--minutes 3` 开发冒烟，`--hours 6` 正式验收。
-- **为什么 endurance 用独立 db**: `data/fishnet_endurance.db`，避免把日常库打成实验场。
+  - `test_hotlist`: 快、可假数据，测公式与渲染，不依赖「连跑多久」。
+  - `test_hotlist_endurance`: 真打 API，测崩溃/连续失败；`--minutes 3` 开发冒烟，`--hours 6` 正式验收。
+- **为什么 endurance 用独立 db**: `data/fishnet_endurance.db`，避免把日常库污染成测试数据。
 - **成功门槛**: 单轮至少 5 个 collector `status=ok`；连续多轮零成功则失败。微博挂了只要其它五张还在，仍算达标。
 
 ## 本地怎么验收
@@ -105,11 +105,11 @@ uv run main.py render --section hotlist
 # 打开 render/sections/hotlist.md
 
 # 3) 单测
-uv run python -m tests.test_lab1
+uv run python -m tests.test_hotlist
 
 # 4) 稳定性（任选）
-uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
-uv run python -m tests.test_lab1_endurance --hours 6
+uv run python -m tests.test_hotlist_endurance --minutes 3 --interval 60
+uv run python -m tests.test_hotlist_endurance --hours 6
 ```
 
 ## 后续接口

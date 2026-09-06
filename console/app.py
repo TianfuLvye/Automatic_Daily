@@ -119,7 +119,7 @@ def create_app(
     database = Path(db_path) if db_path is not None else settings.db_path
     client = wewe or WeweClient(settings.wewe_url)
 
-    app = FastAPI(title="Fishnet 订阅台", docs_url=None, redoc_url=None)
+    app = FastAPI(title="Automatic Daily 订阅台", docs_url=None, redoc_url=None)
 
     def attach_runs(items: list[dict]) -> list[dict]:
         runs: dict[str, dict] = {}
@@ -287,7 +287,7 @@ def create_app(
                 {
                     **item,
                     "url": url,
-                    "in_fishnet": fid in existing_ids or url in existing,
+                    "in_automatic_daily": fid in existing_ids or url in existing,
                 }
             )
         return {"feeds": out}

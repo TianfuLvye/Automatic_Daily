@@ -1,4 +1,4 @@
-"""Fishnet 统一 CLI 入口。
+"""Automatic Daily 统一 CLI 入口。
 
 用法示例:
   uv run main.py --help
@@ -538,7 +538,7 @@ def build_parser() -> argparse.ArgumentParser:
         prog="main.py",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
-            "Fishnet 个人情报报纸的命令行入口。\n"
+            "Automatic Daily 个人情报报纸的命令行入口。\n"
             "基础层: dummy 幂等验收。\n"
             "热榜: DailyHotApi 采集 → newly_entered → hotlist.md。\n"
             "订阅: RSSHub 采集 → subscriptions.md。\n"
@@ -555,7 +555,7 @@ def build_parser() -> argparse.ArgumentParser:
             "  3) uv run main.py stats\n"
             "  4) uv run main.py render --section subscriptions\n"
             f"  RSSHub 基址(settings): {settings.rsshub_url}\n"
-            "部署全家桶(含 fishnet serve):\n"
+            "部署全家桶(含 automatic-daily serve):\n"
             "  docker compose up -d --build\n"
         ),
     )

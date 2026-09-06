@@ -262,7 +262,7 @@ wheels = [
 ]
 
 [[package]]
-name = "fishnet-reference"
+name = "automatic-daily"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
