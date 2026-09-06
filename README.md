@@ -1,10 +1,5 @@
 # Automatic Daily 参考实现
 
-<p align="center">
-  <img src="./assets/showcase/automatic-daily-sample-front-page.png" alt="自动日报成品示例：头版" width="48%" />
-  <img src="./assets/showcase/automatic-daily-sample-inside-page.png" alt="自动日报成品示例：内页" width="48%" />
-</p>
-
 项目背景与早期设计记录见 [docs/archive/](./docs/archive/)。
 
 设计笔记（每个功能为什么这样实现）见 [`docs/`](./docs/README.md)。
