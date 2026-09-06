@@ -1,4 +1,4 @@
-"""Lab 3 / Lab 6:订阅更新。出报用可读正文,不再用「标题+打开链接」表。"""
+"""订阅更新。出报用可读正文,不再用「标题+打开链接」表。"""
 from __future__ import annotations
 
 import re

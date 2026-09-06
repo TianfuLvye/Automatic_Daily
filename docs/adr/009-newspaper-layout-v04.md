@@ -1,7 +1,7 @@
-# ADR-009 · Lab 8 版心改为 newspaper-layout v0.4
+# ADR-009 · 版心改为 newspaper-layout v0.4
 
 - **状态**: 接受
-- **Lab**: 8
+- **主题**: 报纸排版
 - **日期**: 2026-08-30
 - **取代**: [ADR-007](./007-newspaper-grid.md)
 

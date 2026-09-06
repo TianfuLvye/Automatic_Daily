@@ -9,7 +9,7 @@ from pathlib import Path
 
 import yaml
 
-# Lab 9.2: compose 里用服务名覆盖 settings.toml 的 127.0.0.1,本机 CLI 不受影响。
+# compose 里用服务名覆盖 settings.toml 的 127.0.0.1,本机 CLI 不受影响。
 ENV_DAILYHOT_URL = "FISHNET_DAILYHOT_URL"
 ENV_RSSHUB_URL = "FISHNET_RSSHUB_URL"
 ENV_WEWE_URL = "FISHNET_WEWE_URL"
@@ -279,7 +279,7 @@ def load_feeds(
 
 
 def load_targeted(path: Path | None = None) -> list[dict]:
-    """Lab 4:定向采集配置。默认不随全量 collect 启动。"""
+    """定向采集配置。默认不随全量 collect 启动。"""
     p = path or SOURCES_PATH
     cfg = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
     return [dict(row) for row in (cfg.get("targeted") or [])]

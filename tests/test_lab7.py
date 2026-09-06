@@ -1,4 +1,4 @@
-"""Lab 7 验收:黄金集向量化、两阶段召回、事件折叠、A/B、反馈闭环。"""
+"""排序验收:黄金集向量化、两阶段召回、事件折叠、A/B、反馈闭环。"""
 from __future__ import annotations
 
 import os
@@ -38,7 +38,7 @@ def check(name: str, cond: bool, extra: str = "") -> None:
         print(f"  FAIL  {name}  {extra}")
 
 
-print("\n[Lab 7] 黄金集 ≥50 并完成向量化")
+print("\n[排序] 黄金集 ≥50 并完成向量化")
 docs = load_golden()
 check("seed ≥50", len(docs) >= 50, str(len(docs)))
 check("SEED 与 load 一致下限", len(SEED) >= 50)
@@ -58,7 +58,7 @@ if ai and fn:
     check("同簇余弦 > 跨簇", intra > inter, f"intra={intra:.3f} inter={inter:.3f}")
 
 
-print("\n[Lab 7] 两阶段召回,LLM 调用量 ≤150")
+print("\n[排序] 两阶段召回,LLM 调用量 ≤150")
 critic = Critic(prefer_llm=False)
 now = datetime.now(timezone.utc)
 cands: list[Item] = []
@@ -115,7 +115,7 @@ act = Item(Source.ZHIHU, Kind.ARTICLE, "Thoughts Memo赞同了回答: x", "https
 check("视频不进打分", is_rank_candidate(vid) is False)
 check("赞同动态不进打分", is_rank_candidate(act) is False)
 
-print("\n[Lab 7] 当天知乎日报钉进深度,不靠把 weight 调很大")
+print("\n[排序] 当天知乎日报钉进深度,不靠把 weight 调很大")
 import numpy as np
 from pipeline.rank import DEEPREAD_N, RankedItem, ensure_todays_zhihu_daily
 from pipeline.score import ScoreBreakdown
@@ -171,7 +171,7 @@ _h3, _d3, _c3 = ensure_todays_zhihu_daily([old_daily], [], [], [], [], set(), pi
 check("昨天的日报不钉到今天", not _d3)
 
 
-print("\n[Lab 7] 事件聚类:改写稿被折叠(SimHash 抓不到,L3 要抓到)")
+print("\n[排序] 事件聚类:改写稿被折叠(SimHash 抓不到,L3 要抓到)")
 t1 = "宁德时代发布新一代麒麟电池 能量密度大幅提升"
 t3 = "宁德时代今日发布新一代麒麟电池 官方称能量密度提升明显"
 check("L2 仍抓不到改写", hamming(simhash(t1), simhash(t3)) > 3)
@@ -188,7 +188,7 @@ kept, folded = fold_events(pair, pv, cosine_threshold=0.45)
 check("fold_events 只留 1 条主稿", len(kept) == 1, f"kept={len(kept)} folded={folded}")
 
 
-print("\n[Lab 7] A/B:纯热度 vs 打分,顺序可以不同")
+print("\n[排序] A/B:纯热度 vs 打分,顺序可以不同")
 heat = heat_only_order(cands, n=10)
 scored_titles = [ri.item.title for ri in result.ranked[:10]]
 heat_titles = [it.title for it in heat]
@@ -200,7 +200,7 @@ check(
 )
 
 
-print("\n[Lab 7] 反馈闭环能记录")
+print("\n[排序] 反馈闭环能记录")
 tmp = Path(tempfile.mkdtemp())
 store = Store(tmp / "fb.db")
 it = cands[0]
@@ -217,7 +217,7 @@ check("SQLite 能存向量", got is not None and got.shape[0] == vecs[0].shape[0
 store.close()
 
 
-print("\n[Lab 7] 出报接入 + CLI")
+print("\n[排序] 出报接入 + CLI")
 tmp2 = Path(tempfile.mkdtemp())
 st = Store(tmp2 / "ed.db")
 st.upsert_items(cands[:12])
@@ -289,13 +289,13 @@ check("ab CLI 成功", rc_ab == 0, str(rc_ab))
 check("ab 写出对照", (ab_dir / "compare.md").exists() and (ab_dir / "heat.md").exists())
 
 
-print("\n[Lab 7] 启发式评委与探索口子")
+print("\n[排序] 启发式评委与探索口子")
 hi = heuristic_critic("前提错了", "然而数据表明同比下降 8%,另一种解释是口径。作者不确定因果。")
 lo = heuristic_critic("震惊必看", "家人们抓紧入手,不转不是中国人。性价比之王!")
 check("批判文 > 营销文", hi.raw > lo.raw, f"{hi.raw} vs {lo.raw}")
 check("分数在 0-10", 0 <= lo.raw <= 10 and 0 <= hi.raw <= 10)
 
-print("\n[Lab 7] 文档")
+print("\n[排序] 文档")
 check("lab-07 doc exists", DOC.exists())
 if DOC.exists():
     t = DOC.read_text(encoding="utf-8")

@@ -1,10 +1,10 @@
 # Fishnet 参考实现
 
-配套 `Fishnet-Lab.md` / `Fishnet-Lab-Answers.md`。
+项目背景与早期设计记录见仓库根目录的历史手册。
 
-设计笔记（每个 Lab 完成了什么、为什么这样实现）见 [`docs/`](./docs/README.md)。
+设计笔记（每个功能为什么这样实现）见 [`docs/`](./docs/README.md)。
 
-## 部署(Lab 9.2)
+## 部署
 
 一条命令拉起主程序、DailyHotApi、RSSHub、Redis:
 
@@ -36,7 +36,7 @@ uv sync
 docker compose up -d dailyhot rsshub redis
 # 知乎等路由需要 Cookie:把 ZHIHU_COOKIES 写进 .env 后,必须重建容器才会读到:
 # docker compose up -d --force-recreate rsshub
-# Lab 3.4 公众号（可选）: 见 docs/lab-03-rsshub.md
+# 公众号（可选）: 见 docs/lab-03-rsshub.md
 # docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d
 ```
 
@@ -45,21 +45,21 @@ docker compose up -d dailyhot rsshub redis
 ```bash
 uv run main.py collect --only-hotlist       # 只跑热榜
 uv run main.py collect --only-rss           # 只跑订阅
-uv run main.py collect --only-targeted      # Lab 4 小红书创作者(不进默认 collect)
+uv run main.py collect --only-targeted      # 小红书创作者(不进默认 collect)
 uv run main.py collect                      # 热榜 + RSS
-uv run main.py enrich --limit 20            # Lab 5 正文抽取 + B 站白名单发现（不转写）
+uv run main.py enrich --limit 20            # 正文抽取 + B 站白名单发现（不转写）
 uv run main.py transcript BV19d4y1D7n3      # 口播：音频 → 火山 STT → 改稿
-uv run main.py render --edition am          # Lab 6/7/8 出一期早报(含 PDF)
+uv run main.py render --edition am          # 出一期早报(含 PDF)
 uv run main.py pdf --edition 2026-08-26-am  # 只排版已有 digest,不打 used_in
 uv run main.py client                       # 移动端客户端 http://127.0.0.1:8080
 uv run main.py client --export-only         # 只写 edition.json,不启动 Node
-uv run main.py push --dry-run               # Lab 9 预览邮件,不连 SMTP
+uv run main.py push --dry-run               # 预览邮件,不连 SMTP
 uv run main.py push --edition 2026-09-01-pm # 把一期报纸发到邮箱
-uv run main.py health                       # Lab 6 系统体检
-uv run main.py serve                        # Lab 6 常驻调度
+uv run main.py health                       # 系统体检
+uv run main.py serve                        # 常驻调度
 uv run main.py console                      # 本机订阅台 http://127.0.0.1:8787
-uv run main.py golden                       # Lab 7 拟合收藏夹画像
-uv run main.py ab --kind am                 # Lab 7 热度 vs 打分对照(不标记 used_in)
+uv run main.py golden                       # 拟合收藏夹画像
+uv run main.py ab --kind am                 # 热度 vs 打分对照(不标记 used_in)
 uv run main.py feedback --edition DATE-am --n 1 --label 1
 uv run main.py stats
 uv run main.py render --section hotlist
@@ -70,18 +70,18 @@ uv run main.py render --section all
 ## 验收测试
 
 ```bash
-uv run python -m tests.test_all        # Lab 0/2/6/7 核心单测
-uv run python -m tests.test_lab1       # Lab 1 逻辑 + API 连通性
-uv run python -m tests.test_lab2       # Lab 2 关键词 DSL + keywords.yaml
-uv run python -m tests.test_lab3       # Lab 3 RSS / 订阅版面
-uv run python -m tests.test_lab4       # Lab 4 MediaCrawler 隔离 / fixture 入库
-uv run python -m tests.test_lab5       # Lab 5 正文抽取 / 缓存 / 降级
+uv run python -m tests.test_all        # 核心单测
+uv run python -m tests.test_lab1       # 热榜逻辑 + API 连通性
+uv run python -m tests.test_lab2       # 关键词 DSL + keywords.yaml
+uv run python -m tests.test_lab3       # RSS / 订阅版面
+uv run python -m tests.test_lab4       # MediaCrawler 隔离 / fixture 入库
+uv run python -m tests.test_lab5       # 正文抽取 / 缓存 / 降级
 uv run python -m tests.test_transcript # 口播并节打包 / BV 解析 / 下载头
 uv run python -m tests.test_drip       # 滴灌游标 / 口播栏见报
-uv run python -m tests.test_lab6       # Lab 6 调度配置 / 出报隔离 / 体检
-uv run python -m tests.test_lab7       # Lab 7 黄金集 / 两阶段 / 折叠 / 反馈 / A/B
-uv run python -m tests.test_lab8       # Lab 8 期次 → articles.json / 模板加载
-uv run python -m tests.test_lab9       # Lab 9 通道选择 / 邮件组装 / Compose 结构(不连 SMTP)
+uv run python -m tests.test_lab6       # 调度配置 / 出报隔离 / 体检
+uv run python -m tests.test_lab7       # 黄金集 / 两阶段 / 折叠 / 反馈 / A/B
+uv run python -m tests.test_lab8       # 期次 → articles.json / 模板加载
+uv run python -m tests.test_lab9       # 通道选择 / 邮件组装 / Compose 结构(不连 SMTP)
 uv run python -m tests.test_client     # 移动端 edition.json
 
 # 长时间稳定性(验收标准:6 小时无崩溃)
@@ -95,7 +95,7 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 
 ## 已实现
 
-| 模块 | Lab | 说明 |
+| 模块 | 功能 | 说明 |
 |---|---|---|
 | core/schema.py | 0 | Item 契约、URL/标题归一化、时区强制 |
 | core/store.py | 0/1/6 | 幂等入库、WAL、快照、蹿升检测、健康度 |
@@ -139,16 +139,16 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 | docs/adr/007-newspaper-grid.md | 8 | 旧网格方案（superseded） |
 | docs/adr/009-newspaper-layout-v04.md | 8 | 为什么换成 v0.4 模板拼版 |
 | docs/adr/008-bilibili-transcript-whitelist.md | — | B 站列 BV；合集滴灌进 04 口播栏 |
-| docs/lab-08-render.md | 8 | 排版设计笔记 |
-| docs/lab-09-notify.md | 9.1 | 邮件推送设计笔记 |
-| docs/lab-09-compose.md | 9.2 | Compose 全家桶 |
+| docs/lab-08-render.md | 排版 | 排版设计笔记 |
+| docs/lab-09-notify.md | 推送 | 邮件推送设计笔记 |
+| docs/lab-09-compose.md | 部署 | Compose 全家桶 |
 | docs/adr/010-notify-email.md | 9.1 | 为什么主通道是 SMTP、为什么不内联 A3 HTML |
 | docs/adr/011-compose-runtime.md | 9.2 | 为什么 URL 用环境变量覆盖、数据 bind mount |
 
 ## 仍待实现
 
-- Lab 4 直播抓取:本机扫码 MediaCrawler + 填写 `targeted.creator_id`(fixture 路径已验收)
-- Lab 9.3:90 天归档、磁盘水位告警;Telegram / 飞书提醒
+- 直播抓取:本机扫码 MediaCrawler + 填写 `targeted.creator_id`(fixture 路径已验收)
+- 运行完善:90 天归档、磁盘水位告警;Telegram / 飞书提醒
 - 知乎收藏夹 id 填进 `config/golden.yaml` 后 `golden --refresh`,用你的真收藏替换冷启动 seed
 - 配 `FISHNET_LLM_API_KEY` 后评委从启发式切到 LLM(每期仍 ≤150 次,用 Flash 文本模型);头版综述也会走 Flash;配图挑选走 Visual
 - 读书滴灌（章节列表复用 `core/drip.py`）

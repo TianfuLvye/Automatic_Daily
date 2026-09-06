@@ -1,4 +1,4 @@
-"""两阶段排序 —— Lab 7 接到出报 pipeline 的那一层。
+"""两阶段排序 —— 接到出报 pipeline 的那一层。
 
     召回/粗排: S_sim + S_len + S_hot + S_kw  (全体候选)
     精排:      只对 Top 150 跑评委,再加 P_dup、探索、MMR

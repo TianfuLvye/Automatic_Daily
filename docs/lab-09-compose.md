@@ -1,9 +1,9 @@
-# Lab 9.2 · Docker Compose 全家桶
+# Docker Compose 全家桶
 
 > **范围**: 一条命令拉起 fishnet + DailyHotApi + RSSHub + Redis。不做 Telegram、不做 90 天归档。  
 > **决策**: 主程序进 compose;本机 URL 写在 `settings.toml`,容器内用 `FISHNET_*_URL` 覆盖。见 [ADR-011](./adr/011-compose-runtime.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **`Dockerfile`**: Python 3.13 + uv + Playwright Chromium + 思源/Noto CJK 字体 + ffmpeg。入口 `docker/entrypoint.sh` → `main.py serve`。
 2. **`docker-compose.yml`**: `fishnet` / `dailyhot` / `rsshub` / `redis`。`data/` 与 `config/` 绑到主机,重建容器报纸和库还在。
@@ -12,13 +12,13 @@
 5. **WeWe 仍可选**: `-f docker-compose.wewe-rss.yml` 给 fishnet 注入 `FISHNET_WEWE_URL`,并把 `wechat.yaml` 里的 `127.0.0.1:4000` 改写成 `wewe-rss`。
 6. **测试**: `uv run python -m tests.test_lab9`(含 compose 结构 / URL 覆盖,不强制本机 `docker compose up`)。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
 | `docker compose up -d` 一条命令 | `docker-compose.yml` 四服务 |
 | 冷启动:删容器重建能继续出报 | bind mount `./data`;entrypoint 等待;失败隔离 |
-| README 写清部署 | 仓库 `README.md`「部署(Lab 9.2)」 |
+| README 写清部署 | 仓库 `README.md`「部署」 |
 | 密钥不进镜像 | `.dockerignore` 排除 `.env`;`env_file` 注入 |
 | 本机 CLI 不坏 | `settings.toml` 仍是 127.0.0.1;端口 6688/1200 照旧映射 |
 
@@ -28,10 +28,10 @@
 
 ### `docker-compose.yml` · `fishnet`
 
-- **目的**: 把 Lab 6 的 `serve` 从笔记本进程变成可重启的容器。
+- **目的**: 把 `serve` 从笔记本进程变成可重启的容器。
 - **为什么 `settings.toml` 不改成 `http://rsshub:1200`**: 那会让本机 `uv run main.py collect` 失效。覆盖走环境变量,compose `environment` 优先于 `env_file`。
 - **为什么 `shm_size: 1gb`**: Playwright Chromium 默认 `/dev/shm` 太小会静默崩,PDF 出不来。
-- **刻意不做**: 不把 MediaCrawler / 扫码浏览器放进镜像(Lab 4 仍在主机)。不把 WeWe 绑进默认四件套。
+- **刻意不做**: 不把 MediaCrawler / 扫码浏览器放进镜像(仍在主机)。不把 WeWe 绑进默认四件套。
 
 ### `docker/entrypoint.sh`
 

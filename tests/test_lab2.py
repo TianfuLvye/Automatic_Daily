@@ -1,4 +1,4 @@
-"""Lab 2 验收:关键词 DSL + keywords.yaml 覆盖面。"""
+"""关键词 DSL + keywords.yaml 覆盖面验收。"""
 from __future__ import annotations
 
 import sys
@@ -24,7 +24,7 @@ def check(name: str, cond: bool, extra: str = "") -> None:
         print(f"  FAIL  {name}  {extra}")
 
 
-print("\n[Lab 2] keywords.yaml 覆盖面")
+print("\n[关键词] keywords.yaml 覆盖面")
 eng = KeywordEngine.from_yaml(YAML)
 names = [g.name for g in eng.groups]
 check("至少 5 个关键词组", len(eng.groups) >= 5, str(names))
@@ -35,7 +35,7 @@ check("覆盖 policy/政治经济", "policy" in sections, str(sections))
 check("每组都有 exclude", all(g.exclude for g in eng.groups))
 
 
-print("\n[Lab 2] must / any / exclude / weight")
+print("\n[关键词] must / any / exclude / weight")
 check("must+any 命中", eng.match("宁德时代发布三季度财报")[0].group.startswith("自选股"))
 check("must 缺失不命中", not any("自选股" in (r.group or "") for r in eng.match("比亚迪财报")))
 check("exclude 一票否决", not eng.match("宁德时代财报 股吧热议"))
@@ -49,7 +49,7 @@ check("空组不匹配", KeywordEngine([KeywordGroup(name="x")]).match("任意")
 check("score 饱和在 (0,1)", 0 < eng.score("宁德时代财报") < 1)
 
 
-print("\n[Lab 2] annotate / filter_matched(加工层接口)")
+print("\n[关键词] annotate / filter_matched(加工层接口)")
 items = [
     Item(Source.NEWS, Kind.HOTLIST, "宁德时代获大额订单", "https://a/1", collector="t"),
     Item(Source.NEWS, Kind.HOTLIST, "今天天气不错", "https://a/2", collector="t"),

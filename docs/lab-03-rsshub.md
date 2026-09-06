@@ -1,9 +1,9 @@
-# Lab 3 · RSSHub 订阅版面
+# RSSHub 订阅版面
 
 > **范围**: 3.1–3.4（自部署、订阅清单、RSS Collector、公众号 WeWe RSS 方案）。  
 > **3.5 自写 RSSHub 路由**: 本轮不做（已从仓库移除）。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **自部署 RSSHub**:`docker-compose.yml` + Redis，官方 `diygod/rsshub` 镜像。
 2. **订阅清单 ≥10 源**:`config/sources.yaml` 的 `feeds:` 加上 `wechat.yaml` 公众号（不含个人 B 站 UP、「B站每周必看」）。
@@ -11,7 +11,7 @@
 4. **公众号 3.4**:[ADR-002](./adr/002-wechat-mp-strategy.md) + `docker-compose.wewe-rss.yml` + 下文部署步骤。
 5. **版面**:`render/sections/subscriptions.md`；测试 `tests/test_lab3.py`。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -122,10 +122,10 @@ uv run main.py collect --only-rss
 uv run main.py render --section subscriptions
 ```
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- 公众号 Item 的 `source=wechat_mp`，Lab 7 打分应对深度版面设 $w_{\text{hot}}=0$。
-- 有 `content` 的 feed 可在 Lab 5 跳过正文抽取；否则按 URL 抽取。
+- 公众号 Item 的 `source=wechat_mp`，个性化排序应对深度版面设 $w_{\text{hot}}=0$。
+- 有 `content` 的 feed 可跳过正文抽取；否则按 URL 抽取。
 
 ## 思考题备忘
 

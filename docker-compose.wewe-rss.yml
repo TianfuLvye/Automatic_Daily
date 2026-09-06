@@ -1,4 +1,4 @@
-# Lab 3.4 · WeWe RSS（微信公众号 → RSS）
+# WeWe RSS（微信公众号 → RSS）
 #
 # 与主 compose 合并启动:
 #   docker compose -f docker-compose.yml -f docker-compose.wewe-rss.yml up -d

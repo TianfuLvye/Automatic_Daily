@@ -2,11 +2,11 @@
 
 - **状态**: 已接受
 - **日期**: 2026-08-25
-- **背景**: Lab 5。本地 20 页 HTML 验收通过后,直播 `enrich --limit 20` 一度 `ok=0`(微信 robots 全拦、华尔街见闻 SPA 空壳)。知乎热榜/日报/专栏的需求随后叠上来,必须把「发现」和「正文」拆开,并写死合规边界。
+- **背景**: 正文抽取。本地 20 页 HTML 验收通过后,直播 `enrich --limit 20` 一度 `ok=0`(微信 robots 全拦、华尔街见闻 SPA 空壳)。知乎热榜/日报/专栏的需求随后叠上来,必须把「发现」和「正文」拆开,并写死合规边界。
 
 ## 决策
 
-1. **发现走订阅/热榜,正文另一步。** DailyHot 与 RSSHub 只负责「有哪些条目」;缺 `items.content` 时才 `enrich`。报纸(Lab 8)仍只渲染摘要 + 链接,SQLite 里的全文供检索和打分(`content or summary`)。
+1. **发现走订阅/热榜,正文另一步。** DailyHot 与 RSSHub 只负责「有哪些条目」;缺 `items.content` 时才 `enrich`。报纸仍只渲染摘要 + 链接,SQLite 里的全文供检索和打分(`content or summary`)。
 2. **能白嫖就不抓 HTML。** RSS `content:encoded` / 足够长的 summary、华尔街见闻公开 JSON API(`llms.txt` 允许引用)、知乎日报 feed 描述里的早报全文,优先于再打原站。
 3. **默认遵守 robots.txt;个人订阅只放行单篇路径。** 不把整站 override 写进配置。当前允许:
    - `mp.weixin.qq.com/s…`(WeWe 源经常无正文,见 [ADR-002](./002-wechat-mp-strategy.md))

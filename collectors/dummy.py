@@ -1,4 +1,4 @@
-"""Lab 0 假采集器:不访问网络,固定产出一条 Item,用来跑通入库与幂等。"""
+"""假采集器:不访问网络,固定产出一条 Item,用来跑通入库与幂等。"""
 from __future__ import annotations
 
 from collections.abc import Iterable

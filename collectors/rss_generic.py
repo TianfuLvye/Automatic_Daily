@@ -1,7 +1,7 @@
-"""通用 RSS Collector —— Lab 3。
+"""通用 RSS Collector。
 
 一张网适配 N 个 feed:配置在 config/sources.yaml 的 feeds 段。
-部分源会在 content:encoded 里直接给全文,先捡白嫖再决定要不要走 Lab 5 抽取。
+部分源会在 content:encoded 里直接给全文,先捡白嫖再决定要不要走正文抽取。
 """
 from __future__ import annotations
 

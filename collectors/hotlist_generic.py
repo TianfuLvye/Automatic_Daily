@@ -1,4 +1,4 @@
-"""DailyHotApi 热榜采集器 —— Lab 1。
+"""DailyHotApi 热榜采集器。
 
 一个类适配 N 个榜单:board 决定请求路径,source 决定 Item.Source。
 """

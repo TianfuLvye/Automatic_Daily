@@ -1,4 +1,4 @@
-"""Lab 1:产出「今日新上榜 Top 20」Markdown 片段。"""
+"""产出「今日新上榜 Top 20」Markdown 片段。"""
 from __future__ import annotations
 
 from datetime import datetime, timezone, timedelta

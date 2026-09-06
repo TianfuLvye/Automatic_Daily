@@ -1,4 +1,4 @@
-# Fishnet 全局配置(Lab 1+)
+# Fishnet 全局配置
 
 [dailyhot]
 # 自部署 DailyHotApi 基址。勿依赖公共实例——它随时会挂。
@@ -7,13 +7,13 @@ base_url = "http://127.0.0.1:6688"
 timeout_seconds = 20
 
 [rsshub]
-# Lab 3:自部署 RSSHub(见仓库根目录 docker-compose.yml)。
+# 自部署 RSSHub(见仓库根目录 docker-compose.yml)。
 # Docker 网络内其它容器可用 http://rsshub:1200;本机 CLI 用 127.0.0.1。
 # compose 里 fishnet 容器由 FISHNET_RSSHUB_URL 覆盖,不必改这一行。
 base_url = "http://127.0.0.1:1200"
 
 [wewe]
-# Lab 3.4 WeWe RSS。控制台添加公众号时走这个基址。
+# WeWe RSS。控制台添加公众号时走这个基址。
 # 叠加 wewe compose 时容器内由 FISHNET_WEWE_URL=http://wewe-rss:4000 覆盖。
 base_url = "http://127.0.0.1:4000"
 
@@ -23,7 +23,7 @@ render_dir = "render/sections"
 editions_dir = "data/editions"
 
 [scheduler]
-# Lab 6:常驻调度。时区只影响 cron 出报,采集 interval 用墙上时钟分钟。
+# 常驻调度。时区只影响 cron 出报,采集 interval 用墙上时钟分钟。
 timezone = "Asia/Shanghai"
 jitter_seconds = 120          # 打散整点齐发,避免像一次小型 DDoS
 enrich_interval_hours = 6
@@ -34,12 +34,12 @@ pm_hour = 19
 pm_minute = 0
 
 [mediacrawler]
-# Lab 4:MediaCrawler 仓库路径(独立进程,不 import 进 Fishnet)。
+# MediaCrawler 仓库路径(独立进程,不 import 进 Fishnet)。
 # git clone --depth 1 https://github.com/NanmiCoder/MediaCrawler third_party/MediaCrawler
 home = "third_party/MediaCrawler"
 
 [ranking]
-# Lab 7:粗排 Top N 才跑评委;每期 LLM 调用硬顶。
+# 粗排 Top N 才跑评委;每期 LLM 调用硬顶。
 coarse_k = 150
 headline_n = 3
 deepread_n = 8
@@ -47,7 +47,7 @@ critical_n = 3
 explore_ratio = 0.15
 
 [notify]
-# Lab 9.1:主通道邮件。telegram / feishu / client 名字认,但本切片不发。
+# 主通道邮件。telegram / feishu / client 名字认,但当前不发。
 channels = ["email"]
 attach_pdf = true
 # A3 digest.html 数 MB 且依赖打印 CSS,默认不附、也不内联进正文。
@@ -55,7 +55,7 @@ attach_html = false
 max_attach_mb = 15
 
 [extract]
-# Lab 5:正文抽取。同一 URL 24h 内不重复请求;同域名至少间隔 delay_seconds。
+# 正文抽取。同一 URL 24h 内不重复请求;同域名至少间隔 delay_seconds。
 cache_dir = "data/html_cache"
 cache_ttl_hours = 24
 delay_seconds = 1.5

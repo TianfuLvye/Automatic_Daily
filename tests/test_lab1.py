@@ -1,4 +1,4 @@
-"""Lab 1 验收测试。
+"""热榜验收测试。
 
 覆盖:
   - 热度/时间戳解析
@@ -80,7 +80,7 @@ def _seed_snapshots(store: Store, board: str, timeline: list[tuple[str, list[tup
 
 
 # ================================================================== unit
-print("\n[Lab 1] 解析工具")
+print("\n[热榜] 解析工具")
 check("热度 123.4万", _to_float("123.4万") == 1234000.0)
 check("热度 2亿", _to_float("2亿") == 2e8)
 check("热度 int", _to_float(42) == 42.0)
@@ -90,7 +90,7 @@ check("时间戳毫秒", abs(_parse_ts(1_700_000_000_000).timestamp() - 1_700_00
 check("离谱时间戳不炸", _parse_ts(7_670_000_000_000_000_000) is None)
 
 
-print("\n[Lab 1] newly_entered / fast_rising")
+print("\n[热榜] newly_entered / fast_rising")
 tmp = tempfile.mkdtemp()
 st = Store(os.path.join(tmp, "lab1.db"))
 now = datetime.now(timezone.utc)
@@ -116,7 +116,7 @@ check("蹿升 Δr=35 被检出", rising.get("hashC") == 35, str(rising))
 check("未达阈值不进蹿升榜", "hashB" not in rising, str(rising))
 
 
-print("\n[Lab 1] Fake collector 入库 + 快照")
+print("\n[热榜] Fake collector 入库 + 快照")
 rows = [
     {"title": "话题一", "url": "https://weibo.com/1", "hot": "100万"},
     {"title": "话题二", "url": "https://weibo.com/2", "hot": "50万"},
@@ -132,7 +132,7 @@ snaps = st._conn.execute(
 check("每次采集都写快照", snaps == 4, str(snaps))  # 2 items * 2 runs
 
 
-print("\n[Lab 1] hotlist.md 渲染")
+print("\n[热榜] hotlist.md 渲染")
 md = render_hotlist_md([
     Item(Source.WEIBO, Kind.HOTLIST, "标题|含竖线", "https://a.com",
          heat=1.2e6, rank=1, summary="一句摘要"),
@@ -145,7 +145,7 @@ out = write_hotlist_section(st, ["weibo", "demo"], out_path=Path(tmp) / "hotlist
 check("写出文件非空", out.exists() and out.stat().st_size > 20, str(out))
 
 
-print("\n[Lab 1] DailyHotApi 连通性(可选,需本机 :6688)")
+print("\n[热榜] DailyHotApi 连通性(可选,需本机 :6688)")
 import httpx
 
 api = os.environ.get("DAILYHOT_URL", "http://127.0.0.1:6688")

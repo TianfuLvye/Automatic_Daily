@@ -1,4 +1,4 @@
-"""Lab 4 验收:进程隔离、频率/并发、Item 转换入库、笔记与 ADR。"""
+"""定向采集验收:进程隔离、频率/并发、Item 转换入库、笔记与 ADR。"""
 from __future__ import annotations
 
 import tempfile
@@ -116,7 +116,7 @@ def main():
     test_row_to_item_raw_note_shape()
     test_not_in_default_collect()
     test_docs()
-    print("All Lab 4 checks passed.")
+    print("All targeted collection checks passed.")
 
 
 if __name__ == "__main__":

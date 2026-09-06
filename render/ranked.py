@@ -1,4 +1,4 @@
-"""Lab 7 个性化版面:头版 / 深度阅读 / 今日一问。"""
+"""个性化版面:头版 / 深度阅读 / 今日一问。"""
 from __future__ import annotations
 
 from datetime import datetime, timedelta, timezone

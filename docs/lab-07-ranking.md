@@ -1,9 +1,9 @@
-# Lab 7 · 个性化排序:把信息堆变成我的报纸
+# 个性化排序：把信息堆变成我的报纸
 
 > **范围**: 黄金集画像、两阶段打分、事件折叠、探索版位、反馈记录、A/B 对照。  
 > **决策**: 向量后端见 [ADR-006](./adr/006-embed-backend.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **黄金集 ≥50 篇并向量化**: `pipeline/golden_seed.py` 冷启动 50 篇风格原型(AI / 机器人 / 产业财经 / 社会观察 / 学习方法)。`uv run main.py golden` 拟合成多簇 `TasteProfile`。
 2. **两阶段召回**: 全体候选用 $S_{sim}+S_{len}+S_{hot}+S_{kw}$ 粗排,只对 Top 150 跑评委(`pipeline/critic.py`)。没配 LLM Key 时走同一份 rubric 的启发式,出报不中断。
@@ -12,7 +12,7 @@
 5. **反馈闭环**: 每条有编号 Fnn,`uv run main.py feedback --edition … --n 1 --label 1` 写进 `feedback` 表。
 6. **A/B 自评**: `uv run main.py ab --kind am` 写出纯热度 vs 打分对照,不标记 `used_in`(也不该去动正在跑的耐力测试库)。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -65,7 +65,7 @@
 
 ### `core/store.py` · `feedback` / `embeddings`
 
-- 反馈表 Lab 0 就建好了,本 Lab 补上写入和按期查询。
+- 反馈表在基础存储层就建好了,本文补上写入和按期查询。
 - 向量表按 `content_hash` 存 BLOB,模型名一起存,换后端不会和旧向量混用。
 
 ## 本地怎么验收
@@ -74,7 +74,7 @@
 
 ```bash
 uv run python -m tests.test_lab7
-uv run python -m tests.test_all          # 含 Lab 7 打分/去重回归
+uv run python -m tests.test_all          # 含打分/去重回归
 uv run main.py golden                    # 拟合画像,不采集、不出报
 
 # 耐力测试结束后再对着真实库:
@@ -89,9 +89,9 @@ uv run main.py feedback --edition YYYY-MM-DD-am --n 1 --label 1
 2. **评委偏见**: 先做按源/长度分层统计;长度与 LLM 分若相关过高,说明它在给长度打分。有 API 之后用 30 条人工对照算 Spearman。
 3. **权重**: 第一版拍脑袋(早报偏热度、晚报偏 sim/llm),原则是归一化且个人化信号占大头。有 200+ 条反馈再用逻辑回归学,config 手动值始终优先。
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- `data/editions/{期号}/01_headline.md` 等是 Lab 8 的版面文件;PDF 从分版 Markdown 走,`uv run main.py pdf` 只排版。
-- `ranking.json` 把编号映到 hash,Lab 8 HTML 尚未做反馈按钮,对着这份文件发 `feedback` 即可。
-- 头版「今日综述」由 Lab 8 `render/lede.py` 写出。
-- 推送仍是 Lab 9。
+- `data/editions/{期号}/01_headline.md` 等是版面文件;PDF 从分版 Markdown 走,`uv run main.py pdf` 只排版。
+- `ranking.json` 把编号映到 hash,HTML 尚未做反馈按钮,对着这份文件发 `feedback` 即可。
+- 头版「今日综述」由 `render/lede.py` 写出。
+- 推送由通知模块负责。

@@ -1,7 +1,7 @@
-"""近似去重与事件聚类 —— Lab 7 标准答案(不依赖 embedding 的那一半)。
+"""近似去重与事件聚类(不依赖 embedding 的那一半)。
 
 三层去重,成本从低到高:
-  L1 精确  content_hash          O(1)      —— Lab 0 已在入库时完成
+  L1 精确  content_hash          O(1)      —— 已在入库时完成
   L2 近似  SimHash 汉明距离       O(n) 分桶  —— 本文件
   L3 语义  embedding 余弦 + 聚类  O(n^2)    —— 本文件下半部分
 
@@ -154,8 +154,8 @@ def fold_events(items: Sequence, vectors, *,
     kept_vecs = [key_to_vec[key(it)] for it in kept]
     labels = cluster_by_embedding(kept_vecs, threshold=cosine_threshold)
     groups: dict[int, list] = defaultdict(list)
-    for it, lab in zip(kept, labels):
-        groups[lab].append(it)
+    for it, cluster_id in zip(kept, labels):
+        groups[cluster_id].append(it)
 
     out, extra = [], dict(folded)
     taken: set[str] = set()

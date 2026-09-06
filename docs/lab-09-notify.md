@@ -1,9 +1,9 @@
-# Lab 9 · 推送:通道选择 + SMTP 邮件
+# 推送：通道选择 + SMTP 邮件
 
 > **范围**: 9.1 选通道,并把已有 `digest.pdf` 发到邮箱。不做客户端、不做 Telegram。Docker 全家桶见 [lab-09-compose.md](./lab-09-compose.md)。  
 > **决策**: 邮件为主通道;正文是摘要,PDF 是附件。见 [ADR-010](./adr/010-notify-email.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **通道选择**: `notify/channels.py` 认 `email`(发)和 `telegram` / `feishu` / `client`(跳过)。未知名字直接报错。
 2. **邮件摘要**: `notify/compose.py` 读 `articles.json`,写出可在手机上扫读的 text/html,不把 A3 `digest.html` 内联进去。
@@ -11,7 +11,7 @@
 4. **CLI**: `uv run main.py push --edition 2026-09-01-pm`;`--dry-run` 不连服务器;`--force` 忽略已发送记录。
 5. **调度**: `serve` 在出报 `status != failed` 之后立刻 push。SMTP 没配则跳过。`notify.json` 防止同一期连发两次。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -21,7 +21,7 @@
 | 子命令独立可跑 | 没配 SMTP 时 `push` 返回 0 并打印跳过 |
 | 出报后能送到面前 | `_job_edition` 成功后调 `_job_push` |
 
-连续 7 天早晚两报、90 天归档、磁盘水位仍属 9.3 / 运行验收,本切片不验收。Docker 全家桶见 [lab-09-compose.md](./lab-09-compose.md)。
+连续 7 天早晚两报、90 天归档、磁盘水位仍属运行验收,本文不验收。Docker 全家桶见 [lab-09-compose.md](./lab-09-compose.md)。
 
 ## 模块与函数设计笔记
 
@@ -34,8 +34,8 @@
 ### `notify/compose.py` · `compose_digest`
 
 - **目的**: 一期目录 → 主题 / 纯文本 / 简单 HTML / 附件列表。
-- **为什么不内联 `digest.html`**: 约数 MB,打印 CSS 和 `--paper-width` 邮件客户端处理不了。手册 Lab 8 说的「HTML 内联」指的是可读摘要,不是 A3 拼版页。
-- **输入**: 优先 `articles.json`(Lab 8 印刷管线),没有则扫 `digest.md` 的 `##` 标题。不用 `edition.json`,避免绑客户端契约。
+- **为什么不内联 `digest.html`**: 约数 MB,打印 CSS 和 `--paper-width` 邮件客户端处理不了。手册中说的「HTML 内联」指的是可读摘要,不是 A3 拼版页。
+- **输入**: 优先 `articles.json`(印刷管线),没有则扫 `digest.md` 的 `##` 标题。不用 `edition.json`,避免绑客户端契约。
 - **体检不出镜**: 系统页给纸上看,邮件目录留给要读的稿。
 
 ### `notify/email.py` · `build_message` / `send_message`
@@ -72,7 +72,7 @@ uv run main.py push --edition 2026-09-01-pm --force
 
 常驻路径: `uv run main.py serve` 在 07:00 / 19:00 出报成功后自动 push。
 
-## 留给下一 Lab 的接口
+## 后续接口
 
 - Telegram / 飞书:在 `IMPLEMENTED` 里登记,复用 `DigestMail` 做卡片,不要重解析期次。
 - 9.3:90 天归档、磁盘水位告警仍未做。

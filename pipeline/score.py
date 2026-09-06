@@ -1,4 +1,4 @@
-r"""个性化打分 —— Lab 7 标准答案(整个系统的大脑)。
+r"""个性化打分(整个系统的大脑)。
 
     S(x) = w1*S_sim + w2*S_len + w3*S_llm + w4*S_hot + w5*S_kw - w6*P_dup
 
@@ -77,7 +77,7 @@ class TasteProfile:
         k 的选择:样本少时聚类没意义。经验规则 k ≈ sqrt(N/2),
         并夹在 [2, 8] 之间。50 篇收藏 → k=5,合理。
 
-        sample_weights:画像衰减,半年前的收藏权重减半(Lab 7 思考题 1)。
+        sample_weights:画像衰减,半年前的收藏权重减半。
         不引入 sklearn:候选量和黄金集都是百这个量级,numpy K-means 够用。
         """
         v = np.asarray(vectors, dtype=np.float32)
@@ -211,7 +211,7 @@ def apply_exploration(ranked: list, n_slots: int, explore_ratio: float = 0.15,
                       sim_key=lambda x: x[1].parts["sim"],
                       llm_key=lambda x: x[1].parts["llm"],
                       seed: int | None = None) -> list:
-    r"""信息茧房的解药 —— Lab 7 思考题 1 的答案。
+    r"""信息茧房的解药。
 
     留出 15% 的版位给「与你口味不像(低 S_sim)但客观质量高(高 S_llm)」
     的内容。这是 \epsilon-greedy 的一个变体:探索不是随机,而是

@@ -12,7 +12,7 @@
   - **合集** `https://space.bilibili.com/{mid}/lists/{sid}?type=season` → 直打 `https://api.bilibili.com/x/polymer/web-space/seasons_archives_list`（`Referer`/`Origin` 带 B 站）。`type=series` 是另一套接口，不混用。
 3. **合集先存全量 BV 目录。** 每次 enrich 把合集分页拉完，落到 `data/bilibili_seasons/{season_id}.json`。条目以 `Kind.VIDEO` 幂等入库，**不写 content**。HTML 抽取跳过 `bilibili.com/video`。
 4. **合集按天滴灌，且必须见报。** 游标在 `core/drip.py`（`data/drip/{queue_id}.json`），与 B 站目录解耦，以后书的章节可以复用。每个 enabled 合集**每个早报 peek 一条**，写入 `04_oral.md` 并进 `digest.md` 之后才 `advance`。转写成功不算成功；没印上报纸游标不动。片失效才跳过。晚报不滴灌。
-5. **VIDEO 仍不进 Lab 7 打分。** 口播是独立栏 `04_oral.md`，长稿不当头版 8 条里的一条。RSS 订阅版继续跳过视频。
+5. **VIDEO 仍不进个性化打分。** 口播是独立栏 `04_oral.md`，长稿不当头版 8 条里的一条。RSS 订阅版继续跳过视频。
 6. **转写不进 collector，也不进 bili2text。** yt-dlp 只抽音轨 → 火山 STT → Flash 改稿。封面 1–2 张来自合集 `pic` / yt-dlp thumbnail，不下完整视频。
 
 ## 明确不做

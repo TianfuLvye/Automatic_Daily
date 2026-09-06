@@ -1,12 +1,12 @@
 # ADR-011 · 全家桶进 Compose,本机 URL 用环境变量覆盖
 
 - **状态**: 接受
-- **Lab**: 9.2
+- **主题**: Compose 运行时
 - **日期**: 2026-09-02
 
 ## 上下文
 
-Lab 6 把调度放在家里的 `uv run main.py serve`(ADR-005)。Lab 9.1 把邮件接到出报成功之后。手册 9.2 要求 `docker compose up -d` 一条命令拉起主程序 + DailyHotApi + RSSHub + Redis。
+调度运行在家里的 `uv run main.py serve`(ADR-005)，邮件接到出报成功之后。当前运行方式是 `docker compose up -d` 一条命令拉起主程序 + DailyHotApi + RSSHub + Redis。
 
 当时的 `docker-compose.yml` 只有 RSSHub 和 Redis;DailyHot 靠 README 里一条 `docker run`。主程序不在 Compose 里,换机器或重建容器没有单一入口。容器网络里 `127.0.0.1` 是 fishnet 自己,不是 RSSHub。
 

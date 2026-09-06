@@ -1,4 +1,4 @@
-"""验收测试 —— 对应各 Lab 的「验收标准」。
+"""验收测试 —— 对应各功能的「验收标准」。
 
 运行: python -m tests.test_all   (无需 pytest,便于快速自检)
 """
@@ -24,8 +24,8 @@ def check(name, cond, extra=""):
         FAIL += 1; print(f"  FAIL  {name}  {extra}")
 
 
-# ============================================================ Lab 0
-print("\n[Lab 0] URL 归一化 —— 验收标准: 8 个 case")
+# ============================================================ 基础契约
+print("\n[基础] URL 归一化 —— 验收标准: 8 个 case")
 cases = [
     ("https://www.zhihu.com/question/123/answer/456?utm_source=wechat&utm_medium=social",
      "https://www.zhihu.com/question/123/answer/456"),
@@ -48,12 +48,12 @@ for raw, want in cases:
     got = normalize_url(raw)
     check(f"{raw[:52]:52s}", got == want, f"\n        got={got}\n        want={want}")
 
-print("\n[Lab 0] 标题归一化")
+print("\n[基础] 标题归一化")
 check("标点差异归一", normalize_title("宇树科技发布新机器人!") == normalize_title("宇树科技发布新机器人"))
 check("热榜序号剥离", normalize_title("1. 某某事件") == normalize_title("某某事件"))
 check("不同内容不相等", normalize_title("A事件") != normalize_title("B事件"))
 
-print("\n[Lab 0] content_hash 稳定性 —— 排名变化不得产生新条目")
+print("\n[基础] content_hash 稳定性 —— 排名变化不得产生新条目")
 a = Item(Source.WEIBO, Kind.HOTLIST, "某热搜", "https://weibo.com/x?utm_source=a", rank=1, heat=100.0)
 b = Item(Source.WEIBO, Kind.HOTLIST, "某热搜", "https://weibo.com/x", rank=17, heat=999.0)
 check("rank/heat 不参与 hash", a.content_hash == b.content_hash)
@@ -62,13 +62,13 @@ check("跨 source 不混淆", a.content_hash != c.content_hash)
 d = Item(Source.WEIBO, Kind.HOTLIST, "无链接热搜", "")
 check("无 URL 时退化到标题", len(d.content_hash) == 32)
 
-print("\n[Lab 0] 时区 —— naive datetime 必须被转成 aware UTC")
+print("\n[基础] 时区 —— naive datetime 必须被转成 aware UTC")
 e = Item(Source.NEWS, Kind.ARTICLE, "t", "https://a.com/1",
          published_at=datetime(2026, 8, 6, 12, 0, 0))
 check("naive 视作 CST 转 UTC", e.published_at.tzinfo is not None and e.published_at.hour == 4,
       f"got {e.published_at}")
 
-print("\n[Lab 0] 幂等入库 —— 连跑三次库里仍是 1 条")
+print("\n[基础] 幂等入库 —— 连跑三次库里仍是 1 条")
 tmp = tempfile.mkdtemp()
 st = Store(os.path.join(tmp, "t.db"))
 it = lambda: Item(Source.OTHER, Kind.ARTICLE, "Hello Fishnet",
@@ -77,15 +77,15 @@ r = [st.upsert_items([it()]) for _ in range(3)]
 check("三次 upsert 结果 (1,0)(0,1)(0,1)", r == [(1, 0), (0, 1), (0, 1)], str(r))
 check("库内仅 1 条", st.stats()["items"] == 1)
 
-print("\n[Lab 0] 重复入库时补齐缺失正文(而非丢弃)")
+print("\n[基础] 重复入库时补齐缺失正文(而非丢弃)")
 st.upsert_items([Item(Source.OTHER, Kind.ARTICLE, "Hello Fishnet",
                       "https://example.com/", content="正文来了", collector="enricher")])
 got = st.query_items()[0]
 check("content 被回填", got.content == "正文来了", str(got.content))
 
 
-# ============================================================ Lab 6
-print("\n[Lab 6] 失败隔离 —— collector 抛异常不得中断调用方")
+# ============================================================ 调度
+print("\n[调度] 失败隔离 —— collector 抛异常不得中断调用方")
 class Bad(BaseCollector):
     name, interval_minutes = "bad", 30
     def collect(self):
@@ -115,19 +115,19 @@ check("失败被记录", h["bad"]["ok_runs"] == 0)
 check("空结果算失败(页面改版信号)", h["empty"]["ok_runs"] == 0)
 check("正常 collector 成功", h["good"]["ok_runs"] == 1 and h["good"]["new_items"] == 5)
 
-print("\n[Lab 1] 热榜快照 / 新上榜检测")
+print("\n[热榜] 热榜快照 / 新上榜检测")
 snaps = st.newly_entered("weibo", window_hours=6)
 check("5 条全部算新上榜", len(snaps) == 5, str(len(snaps)))
 
-print("\n[Lab 6] used_in —— 早报内容不得在晚报重复")
+print("\n[调度] used_in —— 早报内容不得在晚报重复")
 hs = [i.content_hash for i in st.query_items()[:2]]
 st.mark_used(hs, "2026-08-06-am")
 left = [i.content_hash for i in st.query_items(unused_only=True)]
 check("已用条目不再进入候选", all(x not in left for x in hs))
 
 
-# ============================================================ Lab 2
-print("\n[Lab 2] 关键词 DSL")
+# ============================================================ 关键词
+print("\n[关键词] 关键词 DSL")
 eng = KeywordEngine([
     KeywordGroup(name="自选股", must=["宁德时代"],
                  any=["财报", "定增", "订单"], exclude=["股吧", "荐股"],
@@ -147,8 +147,8 @@ check("空组不匹配一切", KeywordEngine([KeywordGroup(name="x")]).match("�
 check("score 有饱和", 0 < eng.score("宁德时代财报") < 1)
 
 
-# ============================================================ Lab 7 去重
-print("\n[Lab 7] SimHash 近似去重")
+# ============================================================ 排序与去重
+print("\n[排序] SimHash 近似去重")
 t1 = "宁德时代发布新一代麒麟电池 能量密度大幅提升"
 t2 = "宁德时代发布新一代麒麟电池，能量密度大幅提升。"   # 转载, 仅标点差异
 t3 = "宁德时代今日发布新一代麒麟电池 官方称能量密度提升明显"  # 改写转载
@@ -175,7 +175,7 @@ check("转载被折叠", len(kept) == 2, f"kept={len(kept)}")
 check("高分者当主稿", kept[0].title == t1)
 check("折叠关系被保留(可显示为相关报道)", len(folded) == 1)
 
-print("\n[Lab 7] 分桶索引正确性(鸽笼原理)")
+print("\n[排序] 分桶索引正确性(鸽笼原理)")
 idx = SimHashIndex(threshold=3)
 for i, t in enumerate([t1, t2, t3, t4]):
     idx.add(str(i), t)
@@ -183,8 +183,8 @@ check("分桶能召回近似项", "1" in idx.find_dupes("0"))
 check("分桶不误召回无关项", "3" not in idx.find_dupes("0"))
 
 
-# ============================================================ Lab 7 打分
-print("\n[Lab 7] TasteProfile —— 多簇 vs 单一质心")
+# ============================================================ 排序
+print("\n[排序] TasteProfile —— 多簇 vs 单一质心")
 import numpy as np
 rng = np.random.default_rng(0)
 d = 32
@@ -204,12 +204,12 @@ check("多簇 max 优于单一平均质心",
       f"multi={tp.sim(on_topic):.3f} mean={float(mean_c @ v):.3f}")
 check("命中兴趣 > 无关内容", tp.sim(on_topic) > tp.sim(off_topic))
 
-print("\n[Lab 7] 长度打分(对数正态)")
+print("\n[排序] 长度打分(对数正态)")
 check("正好在舒适区得分接近 1", tp.len_score(2500) > 0.9, f"{tp.len_score(2500):.3f}")
 check("水贴衰减", tp.len_score(80) < 0.3, f"{tp.len_score(80):.3f}")
 check("裹脚布衰减", tp.len_score(60000) < 0.4, f"{tp.len_score(60000):.3f}")
 
-print("\n[Lab 7] 总分组合")
+print("\n[排序] 总分组合")
 fresh_hi = final_score(sim=.8, len_s=.9, llm=.8, hot=.5, kw=.6, age_hours=1)
 stale_hi = final_score(sim=.8, len_s=.9, llm=.8, hot=.5, kw=.6, age_hours=72)
 check("时效是乘性否决因子", stale_hi.total < 0.15 * fresh_hi.total,
@@ -224,7 +224,7 @@ pm = final_score(sim=.3, len_s=.2, llm=.5, hot=.95, kw=.3, w=Weights.evening(), 
 check("早报更吃热度", am.total > pm.total, f"am={am.total:.3f} pm={pm.total:.3f}")
 check("hot_score 对热度做 log 压缩", hot_score(1e6) - hot_score(1e5) < 0.25)
 
-print("\n[Lab 7] 探索机制(信息茧房解药)")
+print("\n[排序] 探索机制(信息茧房解药)")
 ranked = []
 for i in range(60):
     sim_v = 0.9 - i * 0.012
@@ -236,7 +236,7 @@ check("版位数不变", len(sel) == 20, str(len(sel)))
 check("确有低相似度高质量内容入选",
       any(x[1].parts["sim"] < 0.55 and x[1].parts["llm"] >= 0.7 for x in sel))
 
-print("\n[Lab 7] MMR 多样性")
+print("\n[排序] MMR 多样性")
 vecs = np.zeros((6, 8), dtype=np.float32)
 vecs[0, 0] = 1; vecs[1, 0] = 1; vecs[2, 0] = 1   # 三篇几乎同向
 vecs[3, 1] = 1; vecs[4, 2] = 1; vecs[5, 3] = 1
@@ -248,7 +248,7 @@ for i in range(3):
 picked = apply_mmr(ranked_mmr, vecs, n_slots=3, lambda_=0.5)
 check("MMR 不会只拿同向的前三", {p[0] for p in picked} != {"t0", "t1", "t2"})
 
-print("\n[Lab 7] L3 聚类(改写稿)")
+print("\n[排序] L3 聚类(改写稿)")
 from pipeline.embed import TfidfEmbedder
 from pipeline.golden_seed import SEED
 _t1 = "宁德时代发布新一代麒麟电池 能量密度大幅提升"

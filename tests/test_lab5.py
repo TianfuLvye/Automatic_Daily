@@ -1,4 +1,4 @@
-"""Lab 5 验收:本地 20 页语料、质量降级、HTML 缓存、入库回填。"""
+"""正文抽取验收:本地 20 页语料、质量降级、HTML 缓存、入库回填。"""
 from __future__ import annotations
 
 import tempfile
@@ -678,7 +678,7 @@ def main():
     test_store_images_column_and_missing_query()
     test_materialize_writes_local_jpeg()
     test_docs()
-    print("All Lab 5 checks passed.")
+    print("All extraction checks passed.")
 
 
 if __name__ == "__main__":

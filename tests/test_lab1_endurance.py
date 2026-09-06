@@ -1,4 +1,4 @@
-"""Lab 1 长时间稳定性验收。
+"""热榜长时间稳定性验收。
 
 验收标准原文:至少 5 个平台热榜稳定入库,连跑 6 小时无崩溃。
 
@@ -39,7 +39,7 @@ from render.hotlist import write_hotlist_section
 
 def _parse_args(argv: list[str] | None = None) -> argparse.Namespace:
     p = argparse.ArgumentParser(
-        description="Lab 1 热榜连跑稳定性测试(默认 6 小时;开发可用 --minutes 3)",
+        description="热榜连跑稳定性测试(默认 6 小时;开发可用 --minutes 3)",
     )
     g = p.add_mutually_exclusive_group()
     g.add_argument("--hours", type=float, help="连跑小时数(验收用 6)")
@@ -112,7 +112,7 @@ def main(argv: list[str] | None = None) -> int:
     boards = [c.board for c in all_collectors(include_dummy=False) if c.board]
 
     print("=" * 60)
-    print("Lab 1 endurance")
+    print("Hotlist endurance")
     print(f"  dailyhot : {settings.dailyhot_url}")
     print(f"  boards   : {boards}")
     print(f"  duration : {duration:.0f}s  interval={args.interval:.0f}s")

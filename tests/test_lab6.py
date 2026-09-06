@@ -1,4 +1,4 @@
-"""Lab 6 验收:调度配置、失败隔离出报、used_in、体检页能报出制造的故障。"""
+"""调度验收:调度配置、失败隔离出报、used_in、体检页能报出制造的故障。"""
 from __future__ import annotations
 
 import os
@@ -439,7 +439,7 @@ def main_tests() -> None:
     test_targeted_disabled_without_creator()
     test_round_robin_caps_one_feed()
     test_docs()
-    print("All Lab 6 checks passed.")
+    print("All scheduler checks passed.")
 
 
 if __name__ == "__main__":

@@ -1,9 +1,9 @@
-# Lab 4 · MediaCrawler:面对真实的反爬
+# MediaCrawler：面对真实的反爬
 
 > **范围**: 装起来、看懂反爬、子进程接入、写清「要不要它」。  
 > **直播扫码**: 本机运维步骤;CI / Agent 用 jsonl fixture 验收 Item 转换与入库。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **进程隔离**: `collectors/targeted_xhs.py` 用 `subprocess` 调 MediaCrawler,主进程只读 jsonl。
 2. **频率与并发写死**: `interval_minutes = 360`,`max_concurrency = 1`;并发 >1 直接拒绝。
@@ -55,11 +55,11 @@ uv run main.py collect --only-targeted
 uv run main.py stats    # 应出现 xiaohongshu
 ```
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- Item 已带 `source=xiaohongshu` / `kind=post`;Lab 5 抽取正文时优先用已有 `summary`,缺 `content` 再打原页。
-- Lab 7 打分:定向帖应 `w_hot` 很低或为 0,兴趣分来自作者与关键词,不来自赞数崇拜。
-- Lab 6 调度:挂 APScheduler 时用 `interval_minutes=360`,不要跟热榜 30 分钟混在一个 tick 里。
+- Item 已带 `source=xiaohongshu` / `kind=post`;正文抽取时优先用已有 `summary`,缺 `content` 再打原页。
+- 个性化排序:定向帖应 `w_hot` 很低或为 0,兴趣分来自作者与关键词,不来自赞数崇拜。
+- 调度:挂 APScheduler 时用 `interval_minutes=360`,不要跟热榜 30 分钟混在一个 tick 里。
 
 ## 思考题备忘
 

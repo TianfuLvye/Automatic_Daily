@@ -1,4 +1,4 @@
-"""关键词 DSL —— Lab 2 标准答案。
+"""关键词 DSL。
 
 语义(借鉴 TrendRadar 的 must/any/exclude,但把「版面归属」加进来了,
 这是它没有而你需要的):

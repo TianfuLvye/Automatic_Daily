@@ -1,10 +1,10 @@
-# Lab 5 · 正文抽取:从标题到内容
+# 正文抽取：从标题到内容
 
 > **范围**: 站点路由 + trafilatura 兜底、HTML 缓存、礼貌抓取、质量降级、回填 `items.content`。  
 > **网络**: 验收用 20 页本地 HTML;直播 `enrich` 才打真实站点。  
 > **决策**: 正文来源 / robots 边界见 [ADR-004](./adr/004-extract-and-robots.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **`enrich/extract.py`**: `extract(url, html=None) -> ExtractResult`,pipeline 可直接调用。
 2. **站点路由**: 微信公众号 / 知乎专栏 / 澎湃走 XPath;华尔街见闻走公开 JSON API;其它走 trafilatura。
@@ -30,7 +30,7 @@
 |---|---|---|
 | **trafilatura** | 通用新闻/博客 HTML | 覆盖广、无站点代码;微信/知乎DOM 杂时召回不稳 |
 | **站点 XPath**(微信 `#js_content`、知乎专栏、澎湃) | 语料里对应 6 页 | 国内站更稳,改版就要改选择器 |
-| **NewsCrawler 类平台适配器** | 只做调研,不进主依赖 | 准确但包体/登录态重,和 Lab 4 一样不该进主进程 |
+| **NewsCrawler 类平台适配器** | 只做调研,不进主依赖 | 准确但包体/登录态重,和定向采集一样不该进主进程 |
 
 没有把 NewsCrawler 当运行时:主链路要保持「httpx + trafilatura」这么轻;需要登录的页(付费墙、微信未授权)走降级,而不是再挂一套浏览器。
 
@@ -104,9 +104,9 @@ uv run python -m tests.test_drip
 1. **付费墙 / 登录 / 纯图片**: 硬付费墙只留标题并标「需订阅」;软墙抽已公开段落并标截断;登录态只用你自己的 Cookie 且限速;纯图片不 OCR,标题 + 链接降级。分层降级,不要二元成败。
 2. **本地库 vs PDF**: 抓进 SQLite 供自己检索,和个人自用空间较大;PDF 天然易转发,渲染层只放摘要 + 链接 +「为什么给你」。报纸的价值是帮你决定读什么,不是替你保存全文。
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- `Item.content` 可空;Lab 7 打分用 `content or summary`。VIDEO 可由 `transcript` / 滴灌写入见报稿，进 `04_oral.md`，仍不进打分池。
+- `Item.content` 可空;排序用 `content or summary`。VIDEO 可由 `transcript` / 滴灌写入见报稿，进 `04_oral.md`，仍不进打分池。
 - `Item.images` 是候选 URL(微信 / 见闻 / 知乎)。`enrich` 对这三家缺图的条目也会再抽;出报时 LLM/启发式挑 1–3 张下载到 `editions/{id}/images/`。
-- Lab 6 调度:正文抽取建议 6 小时一轮,不要跟热榜 30 分钟绑在同一 tick。
-- Lab 8 排版:正文仍来自 Markdown;配图写成 `![](images/…)` 后由 PDF/HTML 读本地文件。
+- 调度:正文抽取建议 6 小时一轮,不要跟热榜 30 分钟绑在同一 tick。
+- 排版:正文仍来自 Markdown;配图写成 `![](images/…)` 后由 PDF/HTML 读本地文件。

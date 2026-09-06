@@ -1,4 +1,4 @@
-"""Lab 3 验收:RSSCollector / feeds 配置 / subscriptions 渲染。
+"""RSSCollector / feeds 配置 / subscriptions 渲染验收。
 
 网络相关用例在本机 RSSHub 未启动时 skip,不拖垮 CI/离线开发。
 """
@@ -243,7 +243,7 @@ def test_live_rsshub_smoke():
     if not _rsshub_up():
         print("[SKIP] live RSSHub not reachable — start with: docker compose up -d")
         return
-    # 挑几个相对稳的路由做连通性(知乎可能要 Cookie,失败不直接判整 Lab 挂)
+    # 挑几个相对稳的路由做连通性(知乎可能要 Cookie,失败不直接判整组挂)
     probes = [
         ("bangumi/today", "{rsshub}/bangumi.tv/calendar/today"),
         ("wsj/official", "https://feeds.a.dj.com/rss/RSSWorldNews.xml"),
@@ -622,7 +622,7 @@ def main():
     test_text_cleanup_and_filters()
     test_lab34_wechat_adr()
     test_live_rsshub_smoke()
-    print("All Lab 3 checks passed (live probes may have been skipped).")
+    print("All RSS checks passed (live probes may have been skipped).")
 
 
 if __name__ == "__main__":

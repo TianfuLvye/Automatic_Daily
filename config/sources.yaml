@@ -1,4 +1,4 @@
-# Lab 1:声明要开的热榜网。board = DailyHotApi 路径名,source = Item.Source 枚举值。
+# 声明要开的热榜网。board = DailyHotApi 路径名,source = Item.Source 枚举值。
 # 说明:weibo 上游常间歇 500,多挂 thepaper 保证「至少 5 平台」验收门槛仍可达成。
 # source 用细粒度平台名(toutiao/thepaper),便于版面溯源;勿再统一标成 news。
 hotlists:
@@ -9,7 +9,7 @@ hotlists:
   - {board: toutiao, source: toutiao}
   - {board: thepaper, source: thepaper}
 
-# Lab 3:RSS / RSSHub 订阅清单。
+# RSS / RSSHub 订阅清单。
 # url 里可用 {rsshub} 占位,运行时替换为 settings.toml 的 [rsshub].base_url。
 # 验收要求 ≥10 源(sources.yaml + wechat.yaml);下列以用户指定账号为核心,再补新番 / 财经 / 知乎日报早报等稳定源。
 #
@@ -78,7 +78,7 @@ feeds:
     kind: article
     weight: 2.0
 
-# Lab 4:定向采集。默认不随 `collect` 全量跑(Playwright 太重)。
+# 定向采集。默认不随 `collect` 全量跑(Playwright 太重)。
 # 只覆盖 RSSHub 做不到的平台:小红书 / 抖音创作者主页。
 # 跑: uv run main.py collect --only-targeted
 # 直播抓取需要本机扫码登录 MediaCrawler;测试用 jsonl fixture,不碰浏览器。

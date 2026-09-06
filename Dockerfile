@@ -1,4 +1,4 @@
-# Lab 9.2:调度 + 采集 + 出报 + 推送。本机 CLI 仍可用;容器内跑 serve。
+# 调度 + 采集 + 出报 + 推送。本机 CLI 仍可用;容器内跑 serve。
 # 基础镜像走 ghcr(uv + Python 3.13),避开 Docker Hub 拉 python:slim 失败。
 FROM ghcr.io/astral-sh/uv:python3.13-bookworm-slim
 

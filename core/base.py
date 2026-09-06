@@ -1,4 +1,4 @@
-"""Collector 基类与安全壳 —— Lab 0 / Lab 6 标准答案。"""
+"""Collector 基类与安全壳。"""
 from __future__ import annotations
 
 import logging
@@ -46,7 +46,7 @@ def run_collector(c: BaseCollector, store: Store, *, max_seconds: int = 300,
                   min_expected: int = 1) -> tuple[int, int]:
     """安全壳:捕获一切异常,记录运行状态,永不向上抛。
 
-    这是 Lab 6 「失败隔离」原则的落点——一张网破了,别的网继续捞。
+    这是「失败隔离」原则的落点——一张网破了,别的网继续捞。
     """
     run_id = store.start_run(c.name)
     t0 = time.monotonic()

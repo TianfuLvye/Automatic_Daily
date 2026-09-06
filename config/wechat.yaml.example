@@ -1,4 +1,4 @@
-# Lab 3.4 · 微信公众号订阅（复制为 wechat.yaml 后使用）
+# 微信公众号订阅（复制为 wechat.yaml 后使用）
 #
 # 前置: 部署 WeWe RSS（见 docker-compose.yml 注释块）并完成微信读书登录。
 # 在 WeWe RSS 管理界面添加公众号后，把生成的 feed URL 填到下面。

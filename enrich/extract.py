@@ -1,4 +1,4 @@
-"""Lab 5 · 正文抽取。
+"""正文抽取。
 
 按站点走轻量适配器,通用兜底 trafilatura。
 失败(太短 / 像导航)时 content 保持 None,只留标题 + summary。

@@ -1,4 +1,4 @@
-"""Lab 9 验收:通道选择 + 邮件组装 + Compose 全家桶结构。不连真实 SMTP / 不强制 docker up。"""
+"""推送验收:通道选择 + 邮件组装 + Compose 全家桶结构。不连真实 SMTP / 不强制 docker up。"""
 from __future__ import annotations
 
 import json
@@ -100,7 +100,7 @@ def _smtp() -> SmtpConfig:
     )
 
 
-print("\n[Lab 9] 文档")
+print("\n[推送] 文档")
 check("lab-09 笔记存在", DOC.exists())
 check("ADR-010 存在", ADR.exists())
 if DOC.exists():
@@ -112,7 +112,7 @@ if ADR.exists():
     check("ADR 选择邮件为主通道", "邮件" in adr and "主通道" in adr)
 
 
-print("\n[Lab 9] 通道选择")
+print("\n[推送] 通道选择")
 en, sk = select_channels(["email"])
 check("默认实现 email", en == ["email"] and sk == [])
 en, sk = select_channels([])
@@ -128,7 +128,7 @@ except UnknownChannelError:
     check("未知通道报错", True)
 
 
-print("\n[Lab 9] SMTP 配置")
+print("\n[推送] SMTP 配置")
 check("没 host 就是未配置", smtp_from_env({}) is None)
 s = smtp_from_env(
     {
@@ -173,7 +173,7 @@ check("settings 默认通道 email", cfg.notify_channels == ("email",), str(cfg.
 check("默认附 PDF 不附 HTML", cfg.notify_attach_pdf and not cfg.notify_attach_html)
 
 
-print("\n[Lab 9] 邮件组装")
+print("\n[推送] 邮件组装")
 with tempfile.TemporaryDirectory() as tmp:
     dest = _tiny_edition(Path(tmp) / "2026-09-02-am")
     mail = compose_digest(dest, attach_pdf=True, attach_html=False)
@@ -202,7 +202,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("默认不附 digest.html", not any(n.endswith(".html") for n in filenames), str(filenames))
 
 
-print("\n[Lab 9] 发送编排(假 SMTP)")
+print("\n[推送] 发送编排(假 SMTP)")
 with tempfile.TemporaryDirectory() as tmp:
     dest = _tiny_edition(Path(tmp) / "2026-09-02-pm")
     sent: list[EmailMessage] = []
@@ -237,7 +237,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("没配 SMTP 跳过不算失败", r_skip.status == "skipped", r_skip.status)
 
 
-print("\n[Lab 9] CLI help")
+print("\n[推送] CLI help")
 import argparse
 
 from main import build_parser
@@ -252,7 +252,7 @@ for action in p._subparsers._group_actions:  # type: ignore[attr-defined]
 check("push 子命令有 --dry-run", sub is not None and "--dry-run" in sub.format_help())
 
 
-print("\n[Lab 9.2] Compose 全家桶")
+print("\n[部署] Compose 全家桶")
 check("lab-09-compose 笔记存在", COMPOSE_DOC.exists())
 check("ADR-011 存在", ADR011.exists())
 check("Dockerfile 存在", DOCKERFILE.exists())
@@ -337,7 +337,7 @@ check(
 )
 
 
-print("\n[Lab 9.2] 容器 URL 覆盖")
+print("\n[部署] 容器 URL 覆盖")
 keys = ("FISHNET_DAILYHOT_URL", "FISHNET_RSSHUB_URL", "FISHNET_WEWE_URL")
 saved = {k: os.environ.pop(k, None) for k in keys}
 try:

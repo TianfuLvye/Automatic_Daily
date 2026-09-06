@@ -1,6 +1,6 @@
-# Lab 1 · 热榜聚合
+# 热榜聚合
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 用 DailyHotApi 拿到「第一桶真鱼」，并做出报纸的第一个真实版面片段：
 
@@ -13,7 +13,7 @@
 
 对应愿景：微博 / B 站 / 知乎等热榜速览进报纸，且强调「新上榜 / 蹿升」，而不是每次复读整张榜。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -29,15 +29,15 @@
 ### `config/sources.yaml` + `core/settings.py`
 
 - **目的**: 把「开哪几张网、API 基址」从代码里拔出来。加榜 = 改 YAML，不必改 Python。
-- **为什么自部署 URL 写进 settings**: Lab 明确说公共实例会挂；配置化方便以后换端口/机器，而不改 collector。
+- **为什么自部署 URL 写进 settings**: 公共实例可能不稳定；配置化方便以后换端口/机器，而不改 collector。
 - **为什么多挂 thepaper**: 实测 `weibo` 上游常 500。验收要「至少 5 平台」，用额外一张稳榜做工程兜底，而不是假装微博永远健康。
 
 ### `collectors/hotlist_generic.py` · `HotlistCollector`
 
 - **目的**: **一个类适配 N 个榜单**——抽象层次在「热榜 API 形态」，不在「微博特殊逻辑」。
 - **为什么 `__init__(board, source)`**: DailyHot 路径名（`/weibo`）和业务 `Source` 可分开配置；热榜场景通常同名（`toutiao` → `toutiao`），便于版面溯源。
-- **为什么 `collect()` 里不写库**: 遵守 Lab 0 契约；快照由 `run_collector` 在 `c.board` 有值时统一 `record_snapshot`。
-- **刻意不做**: 关键词过滤、个性化打分、决定版面——那些是 Lab 2 / 7 的事。热榜网的任务只是「把榜捞进 Raw Store」。
+- **为什么 `collect()` 里不写库**: 遵守数据契约；快照由 `run_collector` 在 `c.board` 有值时统一 `record_snapshot`。
+- **刻意不做**: 关键词过滤、个性化打分、决定版面——这些属于后续加工阶段。热榜网的任务只是「把榜捞进 Raw Store」。
 
 ### `hotlist_generic.py` · `_to_float` / `_parse_ts`
 
@@ -49,7 +49,7 @@
 ### `core/registry.py`
 
 - **目的**: 调度器 / CLI 不用手写 `from collectors.xxx import …` 长名单。
-- **为什么现在用「读 YAML 实例化」而不是复杂插件发现**: Lab 1 只有热榜一类；够用且可读。以后 RSS/定向采集变多，再加强 `pkgutil` 扫描也不迟。
+- **为什么现在用「读 YAML 实例化」而不是复杂插件发现**: 当前只有热榜一类；够用且可读。以后 RSS/定向采集变多，再加强 `pkgutil` 扫描也不迟。
 - **`dummy` 默认不进全量 collect**: 避免污染真实热榜统计；需要时用 `--include-dummy` 或 `--only dummy`。
 
 ### `core/store.py` · `newly_entered`
@@ -72,12 +72,12 @@
 
 ### `render/hotlist.py`
 
-- **目的**: Lab 1 验收要求的第一个报纸碎片——「今日新上榜 Top 20」。
+- **目的**: 第一个报纸碎片——「今日新上榜 Top 20」。
 - **为什么单独模块而不是塞进 `main.py`**: CLI 只负责参数与调用；渲染逻辑要可单测、可被 endurance 每轮复用。
-- **为什么标注「不代表重要性」**: 热榜是幸存者偏差源（Lab 思考题）；版面上先诚实标注，比假装客观更有用。
-- **排序策略**: 先按 heat，再按 rank——在个性化打分（Lab 7）到来之前的朴素默认。
+- **为什么标注「不代表重要性」**: 热榜是幸存者偏差源；版面上先诚实标注，比假装客观更有用。
+- **排序策略**: 先按 heat，再按 rank——在个性化打分接入前的朴素默认。
 
-### `main.py` · `collect` / `render`（Lab 1 增量）
+### `main.py` · `collect` / `render`（热榜增量）
 
 - **目的**: 人手与脚本都能 `collect` → `stats` → `render` 走通。
 - **`--strict`**: 默认关闭（失败隔离：单榜挂了仍退出 0）；CI/验收想「必须全绿」时再打开。
@@ -112,15 +112,15 @@ uv run python -m tests.test_lab1_endurance --minutes 3 --interval 60
 uv run python -m tests.test_lab1_endurance --hours 6
 ```
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- Lab 2（TrendRadar）: 关键词 DSL 已有 `pipeline/keyword.py`；可对热榜 Item 做 must/any/exclude，但**不要把过滤塞回 Collector**。
-- Lab 6: `registry.all_collectors()` + 各网 `interval_minutes` 可直接挂 APScheduler。
-- Lab 7: `hotlist.md` 只是朴素 Top20；个性化排序应替换/增强 render 前的候选池，而不是改 DailyHot 请求代码。
-- Lab 8: 已有 Markdown 中间层碎片，完整报纸渲染可拼多个 `render/sections/*.md`。
+- 关键词 DSL 已有 `pipeline/keyword.py`；可对热榜 Item 做 must/any/exclude，但**不要把过滤塞回 Collector**。
+- `registry.all_collectors()` + 各网 `interval_minutes` 可直接挂 APScheduler。
+- `hotlist.md` 只是朴素 Top20；个性化排序应替换/增强 render 前的候选池，而不是改 DailyHot 请求代码。
+- 已有 Markdown 中间层碎片，完整报纸渲染可拼多个 `render/sections/*.md`。
 
 ## 个人体会（写给后续的自己）
 
-1. **热榜的价值在「变化」不在「清单」。** 只存当前榜等于每次覆盖；快照表才是 Lab 1 的灵魂。
+1. **热榜的价值在「变化」不在「清单」。** 只存当前榜等于每次覆盖；快照表才是这套采集的灵魂。
 2. **依赖会说谎。** DailyHot 的 weibo 500、toutiao 离谱 timestamp，都说明：字段级容错 + 多源冗余，和「失败隔离」是同一原则的不同尺度。
 3. **配置声明渔网、代码只实现网的形状。** `sources.yaml` 让「加一个平台」变成一行配置——这是后面 60+ 源（NewsNow 那种组织）的最小雏形。

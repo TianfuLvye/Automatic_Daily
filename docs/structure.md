@@ -1,12 +1,12 @@
-# Fishnet 项目结构（Lab 9.2 Compose 全家桶之后）
+# Fishnet 项目结构（Compose 全家桶之后）
 
-配套手册是仓库上一级的 `Fishnet-Lab.md`。本仓库 `fishnet-reference/` 是实现。设计决策按 Lab 记在 `docs/lab-*.md` 和 `docs/adr/`；本文只画**现在代码实际长什么样**。
+配套历史手册在仓库上一级。本仓库 `fishnet-reference/` 是实现。设计决策记在 `docs/lab-*.md` 和 `docs/adr/`；本文只画**现在代码实际长什么样**。
 
 ---
 
 ## 1. 一句话
 
-Fishnet 是一份个人报纸流水线：多源撒网 → SQLite 幂等入库 → 抽正文 → 按口味打分出一期 Markdown 早报/晚报。Lab 0–7 已经把「今天读什么」算完并写成 `digest.md`。Lab 8 要做的是把这份 Markdown **排成愿意早餐时读的 PDF**，不要再去改采集和打分。
+Fishnet 是一份个人报纸流水线：多源撒网 → SQLite 幂等入库 → 抽正文 → 按口味打分出一期 Markdown 早报/晚报。采集、排序已经把「今天读什么」算完并写成 `digest.md`。排版阶段把这份 Markdown **排成愿意早餐时读的 PDF**，不要再去改采集和打分。
 
 ---
 
@@ -14,8 +14,8 @@ Fishnet 是一份个人报纸流水线：多源撒网 → SQLite 幂等入库 �
 
 ```text
 fishnet-lab/                      ← Cursor 工作区
-├── Fishnet-Lab.md                实验手册（Lab 0–9 目标与验收）
-├── Fishnet-Lab-Answers.md        思考题参考
+├── Fishnet-Lab.md                历史设计手册
+├── Fishnet-Lab-Answers.md        历史思考题参考
 └── fishnet-reference/            ← 本实现（git 仓库）
     ├── main.py                   唯一 CLI
     ├── config/                   源、关键词、黄金集、调度参数
@@ -25,13 +25,13 @@ fishnet-lab/                      ← Cursor 工作区
     ├── pipeline/                 关键词、打分、出报、体检
     ├── render/                   栏目 Markdown + newspaper-layout 排版
     ├── scheduler/                APScheduler 常驻
-    ├── notify/                   Lab 9：通道选择 + SMTP 邮件
-    ├── docs/                     每个 Lab 的设计笔记 + 本文
+    ├── notify/                   通道选择 + SMTP 邮件
+    ├── docs/                     功能设计笔记 + 本文
     ├── tests/
     └── data/                     运行时产物（不进 git）
 ```
 
-依赖外部进程。Lab 9.2 起默认走 `docker compose up -d`(fishnet 也在里面):
+依赖外部进程。当前默认走 `docker compose up -d`(fishnet 也在里面):
 
 | 服务 | 干什么 | 怎么起 |
 |---|---|---|
@@ -55,19 +55,19 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
                                       │
                     ┌─────────────────┴─────────────────┐
                     │         produce_edition            │
-                    │  Lab 7 打分 → 头版/深度/今日一问   │
-                    │  Lab 1 热榜新上榜                  │
-                    │  Lab 3 订阅（已上头版的只留目录）  │
-                    │  Lab 6 系统体检                    │
+                    │  个性化打分 → 头版/深度/今日一问   │
+                    │  热榜新上榜                        │
+                    │  订阅（已上头版的只留目录）        │
+                    │  系统体检                          │
                     └─────────────────┬─────────────────┘
                                       ▼
                     data/editions/{YYYY-MM-DD-am|pm}/
                                       │
                                       ▼
-                         Lab 8：digest.md → newspaper-layout A3 HTML/PDF
+                         排版：digest.md → newspaper-layout A3 HTML/PDF
                                       │
                                       ▼
-                         Lab 9：邮件摘要 + PDF 附件（Telegram / 客户端未做）
+                         推送：邮件摘要 + PDF 附件（Telegram / 客户端未做）
 ```
 
 原则：**采集器全量入库，报纸才决定今天印哪 30 条。** 热榜标题流和 B 站视频不进个性化打分池。
@@ -94,7 +94,7 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 
 ### 4.2 `collectors/` —— 撒网
 
-| 文件 | Lab | 说明 |
+| 文件 | 功能 | 说明 |
 |---|---|---|
 | `dummy.py` | 0 | 假采集器，跑通全链路 |
 | `hotlist_generic.py` | 1 | DailyHotApi，一种 board 一个采集器 |
@@ -109,7 +109,7 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 
 ### 4.4 `pipeline/` —— 加工与出报
 
-| 文件 | Lab | 说明 |
+| 文件 | 功能 | 说明 |
 |---|---|---|
 | `keyword.py` | 2 | must/any/exclude → 标量 \(S_{kw}\)。yaml 里的 `sections:` **出报时没用** |
 | `edition.py` | 6/7 | `produce_edition`：版面隔离、残缺出报、成功后才 `used_in` |
@@ -123,7 +123,7 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 
 打分公式在 `rank.py` / `score.py`。`feedback` 只写库，**还不会改权重**。
 
-### 4.5 `render/` —— Markdown 中间层 + Lab 8 报纸
+### 4.5 `render/` —— Markdown 中间层 + 报纸
 
 | 文件 | 写出 |
 |---|---|
@@ -137,15 +137,15 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 | `newspaper_templates/` | Guardian 模板（v0.4） |
 | `sections/` | 调试用碎片；`*.md` 被 gitignore |
 
-现在没有 Jinja2 模板。Lab 8 把 `01_`…`99_` 转成 `articles.json`，交给 newspaper-layout v0.4 拼 A3 版，写出 `digest.html` / `digest.pdf`。版面号仍是文件名。
+现在没有 Jinja2 模板。排版把 `01_`…`99_` 转成 `articles.json`，交给 newspaper-layout v0.4 拼 A3 版，写出 `digest.html` / `digest.pdf`。版面号仍是文件名。
 
 注意：`digest.md` 的拼接顺序是 **口播 → 头版 → 深度 → 今日一问 → 热榜 → 订阅 → 体检**。口播栏先写，避免总时限把滴灌稿跳掉。报纸版序由 v0.4 按 `priority` / `kind` 优化（体检压到末尾）。
 
 ### 4.6 `scheduler/` / `notify/`
 
 - `scheduler/run.py`：热榜 30min、RSS 60min、定向与 enrich 6h；07:00 早报 / 19:00 晚报（`Asia/Shanghai`）。jitter + coalesce，避免整点齐发和补跑风暴。出报成功后立刻 `push`。
-- `notify/`：Lab 9.1。主通道 SMTP。`main.py push` 发摘要 + `digest.pdf`；未配置则跳过。
-- `Dockerfile` / `docker-compose.yml`：Lab 9.2。容器内 `FISHNET_*_URL` 指向服务名；本机 CLI 仍用 `127.0.0.1`。
+- `notify/`：主通道 SMTP。`main.py push` 发摘要 + `digest.pdf`；未配置则跳过。
+- `Dockerfile` / `docker-compose.yml`：容器运行时。容器内 `FISHNET_*_URL` 指向服务名；本机 CLI 仍用 `127.0.0.1`。
 
 ---
 
@@ -178,7 +178,7 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 | `rank_snapshots` | 热榜时序，算「新上榜 / 蹿升」 |
 | `collector_runs` | 每次采集/出报的成功失败 |
 | `feedback` | 读完 Fnn 后的有用/无用 |
-| `embeddings` | Lab 7 向量 BLOB |
+| `embeddings` | 向量 BLOB |
 
 时间一律 ISO8601 UTC。出报窗口看 **`published_at`，没有才退 `fetched_at`**（避免旧稿因未读积压混进今天）。
 
@@ -191,10 +191,10 @@ collectors/*  ──►  Item  ──►  Store (data/fishnet.db)
 `data/editions/{YYYY-MM-DD-am|pm}/`（gitignore）：
 
 ```text
-digest.md          ← Lab 8 主入口：各版 Markdown 拼在一起
+digest.md          ← 主入口：各版 Markdown 拼在一起
 digest.html        ← A3 权威版面
 digest.pdf         ← 邮件附件
-notify.json        ← Lab 9 已推送记录(成功才写)
+notify.json        ← 已推送记录(成功才写)
 01_headline.md
 02_hotlist.md
 03_deepread.md
@@ -232,7 +232,7 @@ uv run main.py render --edition am
 
 ## 8. CLI 对照
 
-| 命令 | Lab | 做什么 |
+| 命令 | 功能 | 做什么 |
 |---|---|---|
 | `collect` | 1/3 | 热榜 + RSS 入库 |
 | `collect --only-hotlist` / `--only-rss` / `--only-targeted` | | 只跑一类网 |
@@ -251,9 +251,9 @@ uv run main.py render --edition am
 
 ---
 
-## 9. 已完成的 Lab → 代码落点
+## 9. 功能 → 代码落点
 
-| Lab | 用户能感知到的结果 | 主要代码 |
+| 功能 | 用户能感知到的结果 | 主要代码 |
 |---|---|---|
 | 0 地基 | Item + SQLite + CLI | `core/schema.py` `store.py` `main.py` |
 | 1 热榜 | 新上榜 Top 20 | `collectors/hotlist_generic.py` `render/hotlist.py` |
@@ -270,7 +270,7 @@ uv run main.py render --edition am
 
 ---
 
-## 10. Lab 8 接在哪（已写）
+## 10. 排版接在哪（已写）
 
 手册目标：Markdown → 一份早餐能读完的报纸。版心是 newspaper-layout v0.4 模板拼版。细节见 [lab-08-render.md](./lab-08-render.md) 和 [ADR-009](./adr/009-newspaper-layout-v04.md)。
 
@@ -294,7 +294,7 @@ uv run main.py render --edition am
 
 ---
 
-## 11. 已知缺口（Lab 8 不必先修，但会印到纸上）
+## 11. 已知缺口（不影响先出报，但会印到纸上）
 
 - 华尔街见闻转载常带「追风交易台」会员导流；文中 `~~~~` 会当成 Markdown 代码围栏，Cursor 预览会从第一篇截断。
 - RSS 重复入库默认不覆盖已有 `content`（`COALESCE`），改清洗规则后旧正文不会自动变。

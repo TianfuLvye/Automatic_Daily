@@ -1,4 +1,4 @@
-"""Lab 4 · 小红书创作者采集 —— 子进程隔离 MediaCrawler。
+"""小红书创作者采集 —— 子进程隔离 MediaCrawler。
 
 设计约束:
 - 不 import MediaCrawler(Playwright + Chromium 不能进主进程)
@@ -158,7 +158,7 @@ class XHSCreatorCollector(BaseCollector):
             self.interval_minutes = int(cfg["interval_minutes"])
         self.max_concurrency = int(cfg.get("max_concurrency") or 1)
         if self.max_concurrency != 1:
-            raise ValueError("Lab 4 强制并发 = 1,禁止调高")
+            raise ValueError("定向采集强制并发 = 1,禁止调高")
         self._jsonl_path = Path(jsonl_path) if jsonl_path else None
         self._mc_home = Path(mc_home) if mc_home else load_settings().mc_home
         self._out_dir = Path(out_dir) if out_dir else (ROOT / "data" / "mc_out" / self.name)

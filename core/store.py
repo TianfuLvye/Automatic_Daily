@@ -1,4 +1,4 @@
-"""存储层 —— Lab 0 标准答案。
+"""存储层。
 
 设计要点:
 - 幂等由主键 + INSERT OR IGNORE 保证,不靠先 SELECT 再 INSERT(有竞态)。
@@ -235,7 +235,7 @@ class Store:
                 pass
 
     def items_missing_content(self, limit: int = 50) -> list[Item]:
-        """Lab 5:尚未抽出正文、但有 http(s) 链接的条目。"""
+        """尚未抽出正文、但有 http(s) 链接的条目。"""
         rows = self._conn.execute(
             "SELECT * FROM items WHERE url LIKE 'http%' "
             "AND (content IS NULL OR trim(content) = '') "

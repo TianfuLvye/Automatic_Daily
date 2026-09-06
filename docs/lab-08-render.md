@@ -1,9 +1,9 @@
-# Lab 8 · 渲染:期次 Markdown → newspaper-layout A3 报纸
+# 渲染：期次 Markdown → newspaper-layout A3 报纸
 
 > **范围**: 把已有 `01_`…`99_` / `digest.md` 排成早餐能读的 HTML/PDF。不回头改采集和打分。  
 > **决策**: 版心用 [newspaper-layout v0.4](https://github.com/TianfuLvye/newspaper-layout)，不再自研 4×8 网格。见 [ADR-009](./adr/009-newspaper-layout-v04.md)。旧网格决策见已 superseded 的 [ADR-007](./adr/007-newspaper-grid.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **期次 → articles.json**: `render/edition_to_articles.py` 读分版 Markdown（订阅优先 `items/*.md`），去掉打分/反馈命令，补上 `kind` / `priority` / 图宽高。
 2. **模板拼版**: Guardian 模板在 `render/newspaper_templates/`。Chromium 精确量字 + 真实续页（下转/上接）。
@@ -13,7 +13,7 @@
 
 本机需要 Chromium：`uv run playwright install chromium`，或设置 `CHROMIUM_PATH`。测量缓存在 `data/.cache/newspaper-measure.json`。出刊单测设 `FISHNET_SKIP_LAYOUT=1`，只写 `articles.json`、不跑优化器。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -59,7 +59,7 @@ open data/editions/2026-08-28-am/digest.html
 1. **HTML 也出**: 早餐多半在手机上看。HTML 是扫读和权威版面，PDF 是归档/打印。
 2. **只有 5 条**: 不凑数。空栏目不进 `articles.json`，体检仍见报。
 
-## 留给下一 Lab 的接口
+## 后续接口
 
 - `digest.pdf` 是邮件附件;`articles.json` 给摘要正文。`digest.html` 默认不附(打印 CSS,体积大)。
 - `layout.json` 给调试,不必进 git。

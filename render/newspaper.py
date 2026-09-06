@@ -1,4 +1,4 @@
-"""Lab 8 入口:一期目录 → newspaper-layout v0.4 A3 HTML / PDF。
+"""一期目录 → newspaper-layout v0.4 A3 HTML / PDF。
 
 调试排版只对已有 digest 跑这个模块,不要重跑 collect。
 """

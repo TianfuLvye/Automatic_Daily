@@ -1,4 +1,4 @@
-"""Lab 5 正文抽取测试语料:20 页本地 HTML,不打外网。"""
+"""正文抽取测试语料:20 页本地 HTML,不打外网。"""
 from __future__ import annotations
 
 PARA = (

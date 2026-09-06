@@ -1,4 +1,4 @@
-"""Lab 8 验收:期次目录 → newspaper-layout articles.json。不跑 Chromium 拼版。"""
+"""排版验收:期次目录 → newspaper-layout articles.json。不跑 Chromium 拼版。"""
 from __future__ import annotations
 
 import json
@@ -36,7 +36,7 @@ def check(name: str, cond: bool, extra: str = "") -> None:
         print(f"  FAIL  {name}  {extra}")
 
 
-print("\n[Lab 8] 文档与 ADR")
+print("\n[排版] 文档与 ADR")
 check("lab-08 笔记存在", DOC.exists())
 check("ADR-007 仍在(已 superseded)", ADR_OLD.exists())
 check("ADR-009 存在", ADR_NEW.exists())
@@ -47,7 +47,7 @@ if ADR_OLD.exists():
     check("ADR-007 标明 superseded", "superseded" in ADR_OLD.read_text(encoding="utf-8").lower())
 
 
-print("\n[Lab 8] kind / priority 规则")
+print("\n[排版] kind / priority 规则")
 check("health → system_report", classify_kind("health", "index", "x" * 800) == "system_report")
 check("lede → brief", classify_kind("lede", "index", "综述") == "brief")
 check("hotlist index → brief", classify_kind("hotlist", "index", "1. 标题") == "brief")
@@ -58,7 +58,7 @@ check("长稿 → long", classify_kind("oral", "story", "长" * LONG_CHARS) == "
 check("brief 阈值", BRIEF_CHARS < LONG_CHARS)
 
 
-print("\n[Lab 8] 模板目录")
+print("\n[排版] 模板目录")
 check("Guardian 模板目录存在", TEMPLATES_DIR.is_dir(), str(TEMPLATES_DIR))
 n_templates = len(list(TEMPLATES_DIR.rglob("template.json")))
 check("至少 8 个 template.json", n_templates >= 8, str(n_templates))
@@ -72,7 +72,7 @@ except Exception as e:
     check("TemplateParser 能加载", False, repr(e))
 
 
-print("\n[Lab 8] 合成期次转换")
+print("\n[排版] 合成期次转换")
 with tempfile.TemporaryDirectory() as tmp:
     dest = Path(tmp)
     (dest / "01_headline.md").write_text(
@@ -129,7 +129,7 @@ with tempfile.TemporaryDirectory() as tmp:
     check("字段齐全", all(k in loaded[0] for k in ("id", "title", "markdown", "images", "priority", "kind", "metadata")))
 
 
-print("\n[Lab 8] digest.md 回退")
+    print("\n[排版] digest.md 回退")
 with tempfile.TemporaryDirectory() as tmp:
     dest = Path(tmp)
     (dest / "digest.md").write_text(
@@ -148,7 +148,7 @@ with tempfile.TemporaryDirectory() as tmp:
 
 
 if SAMPLE.is_dir() and (SAMPLE / "01_headline.md").exists():
-    print("\n[Lab 8] 真实期次 2026-08-28-am")
+    print("\n[排版] 真实期次 2026-08-28-am")
     articles, meta = edition_to_articles(SAMPLE, kind="am")
     check("真实期次有稿", len(articles) >= 10, str(len(articles)))
     check("期号对", meta.edition_id == "2026-08-28-am")

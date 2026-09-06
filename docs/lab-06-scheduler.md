@@ -1,9 +1,9 @@
-# Lab 6 · 调度与可靠性:让渔网真的挂在海里
+# 调度与可靠性：让渔网真的挂在海里
 
 > **范围**: APScheduler 常驻、采集安全壳、早晚出报、`used_in`、报纸最后一页系统体检。  
 > **决策**: 调度跑在哪、残缺出报见 [ADR-005](./adr/005-scheduler-runtime.md)。
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 1. **`scheduler/run.py`**: `BlockingScheduler`(Asia/Shanghai)。热榜按 `interval_minutes=30`、RSS=60、定向=360;正文抽取每 6 小时;每天 07:00 早报、19:00 晚报。
 2. **jitter=120 + coalesce + max_instances=1**: 打散整点齐发;错过的任务只补一次。
@@ -13,7 +13,7 @@
 6. **CLI**: `uv run main.py serve` / `render --edition am` / `health`;每个子命令可单独跑,不必等 cron。
 7. **测试**: `uv run python -m tests.test_lab6`(不启动常驻进程、不依赖外网)。
 
-## 对应 Lab 原则 / 验收点
+## 对应原则 / 验收点
 
 | 验收 / 原则 | 落点 |
 |---|---|
@@ -21,7 +21,7 @@
 | 早晚 pipeline,`used_in` 不重复 | `produce_edition` + `Store.mark_used`;订阅/热榜 `unused_only=True` |
 | 体检页报出制造的故障 | `diagnose(expected=...)`;失败写进 digest / `99_health.md` |
 | 子命令独立可跑 | `collect` / `stats` / `render` / `enrich` / `health` / `serve` / `push` |
-| 失败隔离 | Lab 0 的 `run_collector` 安全壳;出报层再包一层 |
+| 失败隔离 | `run_collector` 安全壳;出报层再包一层 |
 
 72 小时不崩是运行时验收:本机 `uv run main.py serve`,期间 `docker stop` 掉 rsshub,再 `render --edition am` 应仍写出 digest,体检页点名失败的 RSS 网。
 
@@ -33,7 +33,7 @@
 - **为什么 APScheduler 而不是 cron**: 单机 Python 原生;和 `main.py` 同一条路,手动 `render --edition am` 能复现明早将发生的事。
 - **为什么传 collector 名而不是实例**: 线程池里每次 job 自己 `Store(db)` + `get_collector(name)`。SQLite 连接不能跨线程共用。
 - **为什么 targeted 没填 `creator_id` 不挂**: 否则每 6 小时记一条「未配置」失败,体检永远红。填了 id 才会 `enabled=True`。
-- **刻意不做**: 不把 dummy 进常驻。邮件推送已由 Lab 9 接到出报成功之后。
+- **刻意不做**: 不把 dummy 进常驻。邮件推送在出报成功之后执行。
 
 ### `jitter` / `coalesce`
 
@@ -56,7 +56,7 @@
 
 ### `core/store.py` · `health` / `db_size_bytes` / `unused_age`
 
-- Lab 0 已预留 `collector_runs` 和 `used_in`。本 Lab 补上 7 日对比和磁盘水位,不另起一套表。
+- 已预留 `collector_runs` 和 `used_in`。这里补上 7 日对比和磁盘水位,不另起一套表。
 
 ## 本地怎么验收
 
@@ -80,10 +80,10 @@ uv run main.py serve
 2. **7 点 pipeline 崩了**: 超时熔断 + 残缺出报,报头写清缺了哪些版。不出报等于产品死亡;死等完整报会错过早餐窗口。
 3. **Actions 额度**: 公开仓库分钟数够,但 IP 公开、无状态、cron 会飘、ToS 不欢迎持续爬取。把它当「6 小时没心跳就告警」的备份通道。
 
-## 留给下一 Lab 的接口
+## 后续接口
 
-- `data/editions/{YYYY-MM-DD-am}/digest.md` 是 Lab 8 的 Markdown 中间层入口;PDF 从这里走,不要从 collector 直出。
-- 体检页文件名 `99_health.md`,Lab 8 模板目录按这个序号接。
-- `used_in` 已有值的条目不再进候选;Lab 7 打分只看未使用 + 当日窗口(已接入 `produce_edition`)。
-- 出报 Markdown 已含正文(或视频简介),Lab 8 排版时直接吃 `digest.md` / `items/*.md`,不要再做成标题链接表。
+- `data/editions/{YYYY-MM-DD-am}/digest.md` 是 Markdown 中间层入口;PDF 从这里走,不要从 collector 直出。
+- 体检页文件名 `99_health.md`,排版模板目录按这个序号接。
+- `used_in` 已有值的条目不再进候选;排序只看未使用 + 当日窗口(已接入 `produce_edition`)。
+- 出报 Markdown 已含正文(或视频简介),排版时直接吃 `digest.md` / `items/*.md`,不要再做成标题链接表。
 - 推送:出报成功后 `scheduler` 调 `notify.push`;人手 `uv run main.py push`。SMTP 见 `.env.example`。

@@ -1,4 +1,4 @@
-"""Lab 6:报纸最后一页「系统体检」。"""
+"""报纸最后一页「系统体检」。"""
 from __future__ import annotations
 
 from datetime import timedelta, timezone

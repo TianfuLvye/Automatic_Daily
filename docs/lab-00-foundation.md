@@ -1,6 +1,6 @@
-# Lab 0 · 地基
+# 地基：数据契约与基础设施
 
-## 本 Lab 完成了什么
+## 本文记录了什么
 
 在写任何真实爬虫之前，先把「数据长什么样、往哪放、怎么反复采也不炸库」定死：
 
@@ -12,7 +12,7 @@
 
 对应愿景：后面无论热榜、RSS 还是定向爬虫，都只是往同一个漏斗里加「渔网」。
 
-## 对应 Lab 原则
+## 对应原则
 
 | 原则 | 落点 |
 |---|---|
@@ -46,7 +46,7 @@
 ### `core/store.py` · `rank_snapshots` / `collector_runs`
 
 - **目的**: 把「实体」和「观测」拆开——`items` 一条内容一行；快照表记名次曲线；`collector_runs` 记健康度。
-- **为什么现在就建**: Lab 1 的「新上榜 / 蹿升」完全依赖快照；Lab 6 告警依赖 runs。地基阶段把表备好，比后面迁移便宜。
+- **为什么现在就建**: 热榜的「新上榜 / 蹿升」完全依赖快照；调度告警依赖 runs。地基阶段把表备好，比后面迁移便宜。
 
 ### `core/base.py` · `BaseCollector` / `run_collector`
 
@@ -61,8 +61,8 @@
 
 ### `main.py` · CLI 子命令
 
-- **目的**: 统一入口，让调度器（Lab 6）和人手调试走同一条路。
-- **为什么 Lab 0 就留 `render` / `push` 空壳**: 验收要求 `--help` 能列出四个命令；占位比事后改 CLI 形状更稳。
+- **目的**: 统一入口，让调度器和人手调试走同一条路。
+- **为什么一开始就留 `render` / `push` 空壳**: 验收要求 `--help` 能列出四个命令；占位比事后改 CLI 形状更稳。
 
 ## 本地怎么验收
 
@@ -74,8 +74,8 @@ uv run main.py stats          # 1 items, 0 new, 1 dup
 uv run python -m tests.test_all
 ```
 
-## 留给下一 Lab 的接口
+## 后续接口
 
 - 新渔网 = 新的 `BaseCollector` 子类，交给 `run_collector` 即可。
-- `rank_snapshots` + `newly_entered` / `fast_rising` 已在 Store，Lab 1 直接用。
-- CLI 的 `collect` 将从「手写字典」演进到 `registry`（Lab 1 完成）。
+- `rank_snapshots` + `newly_entered` / `fast_rising` 已在 Store，热榜采集直接使用。
+- CLI 的 `collect` 将从「手写字典」演进到 `registry`。

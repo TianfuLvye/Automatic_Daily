@@ -1,22 +1,22 @@
-"""Fishnet 统一 CLI 入口(Lab 0–9)。
+"""Fishnet 统一 CLI 入口。
 
 用法示例:
   uv run main.py --help
   uv run main.py collect --only hotlist_weibo
   uv run main.py collect --only-rss
-  uv run main.py collect --only-targeted # Lab 4,不进默认 collect
+  uv run main.py collect --only-targeted # 定向采集,不进默认 collect
   uv run main.py collect                 # 热榜 + RSS 订阅
-  uv run main.py enrich --limit 20       # Lab 5 正文抽取 + B 站白名单发现
+  uv run main.py enrich --limit 20       # 正文抽取 + B 站白名单发现
   uv run main.py transcript BV19d4y1D7n3 # 口播：下载音频 → 火山 STT → 改稿
-  uv run main.py render --edition am     # Lab 6/7/8 出一期早报(含 PDF)
+  uv run main.py render --edition am     # 出一期早报(含 PDF)
   uv run main.py pdf                     # 对已有期次只排版,不重跑打分
   uv run main.py client                  # 启动移动端客户端
-  uv run main.py push                    # Lab 9 邮件推送最近一期
-  uv run main.py golden                  # Lab 7 拟合收藏夹画像
-  uv run main.py ab --kind am            # Lab 7 热度 vs 打分对照
+  uv run main.py push                    # 邮件推送最近一期
+  uv run main.py golden                  # 拟合收藏夹画像
+  uv run main.py ab --kind am            # 热度 vs 打分对照
   uv run main.py feedback --edition DATE-am --n 1 --label 1
-  uv run main.py health                  # Lab 6 系统体检
-  uv run main.py serve                   # Lab 6 常驻调度(出报后自动 push)
+  uv run main.py health                  # 系统体检
+  uv run main.py serve                   # 常驻调度(出报后自动 push)
   uv run main.py console                 # 本机网页控制台，改订阅源
   uv run main.py stats
 """
@@ -208,7 +208,7 @@ def cmd_render(args: argparse.Namespace) -> int:
 
 
 def cmd_enrich(args: argparse.Namespace) -> int:
-    """Lab 5 抽网页正文；并列出 B 站白名单视频（不转写）。"""
+    """抽网页正文；并列出 B 站白名单视频（不转写）。"""
     from enrich.bilibili import enrich_bilibili
     from enrich.extract import enrich_store
 
@@ -319,7 +319,7 @@ def cmd_client(args: argparse.Namespace) -> int:
     client_root = ROOT.parent / "auto-daily-client"
     if not (client_root / "scripts" / "dev.mjs").exists():
         print(
-            f"找不到客户端 {client_root}。先把 auto-daily-client 放到 fishnet-lab/ 下。",
+            f"找不到客户端 {client_root}。请把 auto-daily-client 放到项目目录下。",
             file=sys.stderr,
         )
         return 1
@@ -384,7 +384,7 @@ def cmd_pdf(args: argparse.Namespace) -> int:
 
 
 def cmd_push(args: argparse.Namespace) -> int:
-    """Lab 9:把已有期次发到邮件。未配置 SMTP 时跳过,不算失败。"""
+    """把已有期次发到邮件。未配置 SMTP 时跳过,不算失败。"""
     from notify.channels import UnknownChannelError
     from notify.config import NotifyConfigError, load_notify_config, resolve_edition_dir
     from notify.push import push_edition_dir
@@ -539,23 +539,23 @@ def build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description=(
             "Fishnet 个人情报报纸的命令行入口。\n"
-            "Lab 0: dummy 幂等验收。\n"
-            "Lab 1: DailyHotApi 热榜采集 → newly_entered → hotlist.md。\n"
-            "Lab 3: RSSHub 订阅采集 → subscriptions.md。\n"
-            "Lab 5: trafilatura 正文抽取 → items.content。\n"
-            "Lab 6: APScheduler 常驻 + 早晚出报 + 系统体检。\n"
-            "Lab 7: 收藏夹画像 + 两阶段打分 + 事件折叠 + 反馈。\n"
-            "Lab 8: 期次 Markdown → newspaper-layout v0.4 A3 HTML/PDF。\n"
-            "Lab 9: SMTP 邮件推送(摘要正文 + PDF 附件);compose 全家桶。"
+            "基础层: dummy 幂等验收。\n"
+            "热榜: DailyHotApi 采集 → newly_entered → hotlist.md。\n"
+            "订阅: RSSHub 采集 → subscriptions.md。\n"
+            "正文: trafilatura 抽取 → items.content。\n"
+            "调度: APScheduler 常驻 + 早晚出报 + 系统体检。\n"
+            "排序: 收藏夹画像 + 两阶段打分 + 事件折叠 + 反馈。\n"
+            "排版: 期次 Markdown → newspaper-layout v0.4 A3 HTML/PDF。\n"
+            "推送: SMTP 邮件(摘要正文 + PDF 附件);compose 全家桶。"
         ),
         epilog=(
-            "Lab 3 快速验收:\n"
+            "订阅快速验收:\n"
             "  1) docker compose up -d dailyhot rsshub redis\n"
             "  2) uv run main.py collect --only-rss\n"
             "  3) uv run main.py stats\n"
             "  4) uv run main.py render --section subscriptions\n"
             f"  RSSHub 基址(settings): {settings.rsshub_url}\n"
-            "Lab 9.2 部署全家桶(含 fishnet serve):\n"
+            "部署全家桶(含 fishnet serve):\n"
             "  docker compose up -d --build\n"
         ),
     )
@@ -600,22 +600,22 @@ def build_parser() -> argparse.ArgumentParser:
     p_collect.add_argument(
         "--only-rss",
         action="store_true",
-        help="只跑 feeds 段的 RSS 订阅采集器(Lab 3)",
+        help="只跑 feeds 段的 RSS 订阅采集器",
     )
     p_collect.add_argument(
         "--only-hotlist",
         action="store_true",
-        help="只跑热榜采集器(Lab 1),跳过 RSS",
+        help="只跑热榜采集器,跳过 RSS",
     )
     p_collect.add_argument(
         "--only-targeted",
         action="store_true",
-        help="只跑 Lab 4 定向采集(小红书创作者;默认 collect 不会跑它)",
+        help="只跑定向采集(小红书创作者;默认 collect 不会跑它)",
     )
     p_collect.add_argument(
         "--include-dummy",
         action="store_true",
-        help="在跑全部时,额外包含 Lab 0 的 dummy 采集器",
+        help="在跑全部时,额外包含 dummy 采集器",
     )
     p_collect.add_argument(
         "--strict",
@@ -640,10 +640,10 @@ def build_parser() -> argparse.ArgumentParser:
         help="渲染报纸片段,或 --edition am/pm 出一期完整 digest",
         description=(
             "支持:\n"
-            "  --section hotlist        Lab 1 新上榜 Top N(调试,不标记 used_in)\n"
-            "  --section subscriptions  Lab 3 订阅更新(调试,不标记 used_in)\n"
+            "  --section hotlist        新上榜 Top N(调试,不标记 used_in)\n"
+            "  --section subscriptions  订阅更新(调试,不标记 used_in)\n"
             "  --section all            两者都写\n"
-            "  --edition am|pm          Lab 6/7/8 出一期报纸(含个性化版面 + A3 PDF),标记 used_in"
+            "  --edition am|pm          出一期报纸(含个性化版面 + A3 PDF),标记 used_in"
         ),
     )
     p_render.add_argument(
@@ -690,7 +690,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_pdf = sub.add_parser(
         "pdf",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help="把已有期次排成 A3 报纸(Lab 8,不标记 used_in)",
+        help="把已有期次排成 A3 报纸,不标记 used_in",
         description=(
             "只吃 data/editions/{期号}/ 里的 Markdown,写出 articles.json / edition.json / digest.html / digest.pdf / layout.json。\n"
             "排版调试用这个,不要重跑 collect。需要本机 Chromium。"
@@ -713,7 +713,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_enrich = sub.add_parser(
         "enrich",
-        help="抽取正文并回填 items.content(Lab 5)",
+        help="抽取正文并回填 items.content",
         description=(
             "列出 B 站白名单视频(不转写),再对库里尚无 content 的网页条目抽正文。\n"
             "播放页不走 HTML 抽取。同一 URL 24h 内走 HTML 缓存;遵守 robots.txt。"
@@ -754,7 +754,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_health = sub.add_parser(
         "health",
-        help="系统体检(Lab 6)",
+        help="系统体检",
         description=(
             "检查过去 24h 从未成功的采集器、产出骤降、数据库大小、最老未处理数据。\n"
             "与报纸最后一页「系统体检」是同一份报告。"
@@ -764,7 +764,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_serve = sub.add_parser(
         "serve",
-        help="启动常驻调度(Lab 6)",
+        help="启动常驻调度",
         description=(
             "APScheduler:热榜 30min / RSS 60min / 定向与正文 6h;\n"
             "每天 07:00 早报、19:00 晚报(Asia/Shanghai)。\n"
@@ -774,7 +774,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_serve.add_argument(
         "--no-targeted",
         action="store_true",
-        help="不调度 Lab 4 定向采集(默认:已配置 creator_id 的才会挂上)",
+        help="不调度定向采集(默认:已配置 creator_id 的才会挂上)",
     )
     p_serve.set_defaults(func=cmd_serve)
 
@@ -837,7 +837,7 @@ def build_parser() -> argparse.ArgumentParser:
     p_push = sub.add_parser(
         "push",
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        help="邮件推送一期报纸(Lab 9)",
+        help="邮件推送一期报纸",
         description=(
             "把 data/editions/{期号}/ 的目录做成邮件摘要,PDF 当附件发出。\n"
             "SMTP 走 .env 的 FISHNET_SMTP_*;没配则跳过,不算出错。\n"
@@ -866,7 +866,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_golden = sub.add_parser(
         "golden",
-        help="拟合收藏夹画像(Lab 7)",
+        help="拟合收藏夹画像",
         description=(
             "用 config 里的黄金集(≥50 篇 seed)拟合多簇 TasteProfile。\n"
             "--refresh 会按 golden.yaml 的收藏夹 id 经 RSSHub 追加。"
@@ -887,7 +887,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_fb = sub.add_parser(
         "feedback",
-        help="给报纸条目打有用/无用(Lab 7)",
+        help="给报纸条目打有用/无用",
         description="读完 F01 之后: feedback --edition 2026-08-25-am --n 1 --label 1",
     )
     p_fb.add_argument("--edition", required=True, help="期号,例如 2026-08-25-am")
@@ -905,7 +905,7 @@ def build_parser() -> argparse.ArgumentParser:
 
     p_ab = sub.add_parser(
         "ab",
-        help="热度 vs 打分 A/B 对照(Lab 7,不标记 used_in)",
+        help="热度 vs 打分 A/B 对照(不标记 used_in)",
         description="写出 heat.md / scored.md / compare.md,供自己盲评哪期更想读。",
     )
     p_ab.add_argument("--kind", choices=("am", "pm"), default="am")

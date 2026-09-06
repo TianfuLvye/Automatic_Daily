@@ -1,5 +1,5 @@
 #!/bin/sh
-# Lab 9.2:冷启动时 DailyHot / RSSHub 可能比 fishnet 晚就绪。
+# 冷启动时 DailyHot / RSSHub 可能比 fishnet 晚就绪。
 # 最多等约 60s,超时也启动——采集失败隔离,下一 tick 会再试。
 set -eu
 
